@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    # Use H2 in file mode for persistent storage across application restarts
+    url: jdbc:h2:file:./data/class_cash_flow_manager;AUTO_SERVER=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+
+  h2:
+    console:
+      enabled: true            # Enables the web console at /h2-console
+      path: /h2-console        # Optional: set custom path for H2 console
+
+  flyway:
+    enabled: true              # Enable Flyway for DB migrations
+    locations: classpath:db/migration  # Migration scripts location
+    # Use the same H2 connection as datasource (so no need to re-specify url/user/password)
+
+  jpa:
+    hibernate:
+      ddl-auto: update         # Update schema automatically on startup (okay for dev only)
+    show-sql: true             # Print SQL queries to the console
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect  # Use H2 dialect for compatibility
+
+  sql:
+    init:
+      mode: always             # Ensures schema/data.sql runs even if DB already exists
+
+logging:
+    level:
+        org.springframework.web: DEBUG  # Enable detailed logs for Spring Web (good for dev)
