@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    url: jdbc:h2:file:./data/class_cash_flow_manager_prod;AUTO_SERVER=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: strong_production_password  # CHANGE THIS!
+    hikari:
+      maximum-pool-size: 5                # Optional tuning
+
+  h2:
+    console:
+      enabled: false                      # Disable H2 console in production for security
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+  jpa:
+    hibernate:
+      ddl-auto: validate                  # DO NOT update schema automatically in prod
+    show-sql: false                       # Hide SQL logs to keep logs clean
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+
+  sql:
+    init:
+      mode: never                         # Avoid running schema.sql or data.sql in prod
+
+logging:
+  level:
+    root: INFO                            # Default info logging
+    org.springframework.web: WARN         # Less verbosity in production

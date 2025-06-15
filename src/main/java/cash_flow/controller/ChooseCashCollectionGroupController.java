@@ -1,13 +1,11 @@
 package cash_flow.controller;
 
+import cash_flow.scene.SceneEngine;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.ResourceBundle;
 
 @Component
 public class ChooseCashCollectionGroupController {
@@ -17,14 +15,23 @@ public class ChooseCashCollectionGroupController {
     @FXML
     public ListView<String> cashCollectionGroupListView;
 
-    private ResourceBundle resources;
+    private final SceneEngine sceneEngine;
+
+    @Autowired
+    public ChooseCashCollectionGroupController(SceneEngine sceneEngine) {
+        this.sceneEngine = sceneEngine;
+    }
 
     @FXML
     public void initialize() {
-        cashCollectionGroupListView.setCellFactory(listView ->
-                new ListCellController());
+        // Set up cell factory
+        cashCollectionGroupListView
+                .setCellFactory(listView -> new ListCellController(sceneEngine));
 
-        // TEMP EXAMPLE DATA
+        // Add special first item (used for the button row)
+        cashCollectionGroupListView.getItems().add("$$ADD_NEW$$");
+
+        // Add normal items
         cashCollectionGroupListView.getItems().addAll("Group A", "Group B", "Group C");
     }
 }

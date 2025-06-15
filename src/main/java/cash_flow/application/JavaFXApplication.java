@@ -26,11 +26,15 @@ public class JavaFXApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        SceneEngine sceneEngine;
-        sceneEngine = springContext.getBean(SceneEngine.class);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        SceneEngine sceneEngine = springContext.getBean(SceneEngine.class);
         sceneEngine.setMainStage(primaryStage);
 
-        sceneEngine.initializeStage("choose_cash_collection_group_label", );
+        sceneEngine.initializeStage("base_layout_scene", "loading_scene");
     }
 
     @Override

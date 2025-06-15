@@ -1,8 +1,11 @@
 package cash_flow.application.onekeytwovaluemap;
 
+import org.springframework.stereotype.Component;
+
 import java.util.HashMap;
 import java.util.Map;
 
+@Component
 public class OneKeyTwoValueMap<K, V1, V2> {
     private final Map<K, Pair<V1, V2>> map;
 
