@@ -1,8 +1,10 @@
 package cash_flow.scene;
 
 import cash_flow.application.SpringFXMLLoader;
-import cash_flow.application.onekeytwovaluemap.OneKeyTwoValueMap;
 import cash_flow.controller.BaseLayoutController;
+import cash_flow.controller.DeferredSceneInit;
+import cash_flow.style_manager.StyleManager;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -14,65 +16,40 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 
 @Component
 @Slf4j
 public class SceneEngine {
 
-    private static final String SCENE_MAP = "/properties/scene_map.properties";
-
     private final SpringFXMLLoader springFXMLLoader;
-    private final OneKeyTwoValueMap<String, String, String> sceneMap;
     private final BaseLayoutController baseLayoutController;
+    private final SceneConfigurationLoader sceneConfigurationLoader;
+    private final StyleManager styleManager;
 
     @Setter
     private Stage mainStage;
 
     @Autowired
     public SceneEngine(SpringFXMLLoader springFXMLLoader,
-                       OneKeyTwoValueMap<String, String, String> sceneMap,
-                       BaseLayoutController baseLayoutController) {
+                       BaseLayoutController baseLayoutController,
+                       SceneConfigurationLoader sceneConfigurationLoader, StyleManager styleManager) {
         this.springFXMLLoader = springFXMLLoader;
-        this.sceneMap = sceneMap;
         this.baseLayoutController = baseLayoutController;
-        loadSceneMap();
-    }
-
-    private void loadSceneMap() {
-        try (InputStream input = getClass().getResourceAsStream(SCENE_MAP)) {
-            if (input == null) {
-                throw new IOException("Unable to find scenes.properties");
-            }
-
-            Properties sceneFiles = new Properties();
-            sceneFiles.load(input);
-
-            for (String key : sceneFiles.stringPropertyNames()) {
-                String[] values = sceneFiles.getProperty(key).split("=");
-                if (values.length == 2) {
-                    sceneMap.put(key, values[0], values[1]);
-
-                } else {
-                    throw new IllegalArgumentException("Invalid format for key: " + key);
-                }
-            }
-        } catch (IOException | IllegalArgumentException e) {
-            throw new RuntimeException("Failed to load scene map", e);
-        }
+        this.sceneConfigurationLoader = sceneConfigurationLoader;
+        this.styleManager = styleManager;
     }
 
     /**
      * Initializes the primary stage with a base scene and a starter scene.
      */
-    public void initializeStage(String starterScene, String loading) {
+    public void initializeStage(SceneType starterScene, SceneType loading) {
         log.info("Initializing stage with starter scene: {}", starterScene);
 
         switchScene(starterScene);
-        mainStage.setResizable(true);
         mainStage.show();
         switchScene(loading);
+
+
 
         log.debug("Stage initialized and shown.");
     }
@@ -80,48 +57,68 @@ public class SceneEngine {
     /**
      * Switches the displayed scene based on its logical placement.
      */
-    public void switchScene(String sceneName) {
-        log.info("Switching to scene: {}", sceneName);
+    public void switchScene(SceneType sceneType) {
+        SceneConfiguration sceneConfiguration = sceneConfigurationLoader.load(sceneType);
+        log.info("Switching to scene: {}", sceneType);
 
-        String scenePlacement = sceneMap.get(sceneName).getValue2();
-        log.debug("Scene placement for {} is '{}'", sceneName, scenePlacement);
+        String scenePlacement = sceneConfiguration.getPlacement();
+        log.debug("Scene placement for {} is '{}'", sceneType, scenePlacement);
 
         try {
             switch (scenePlacement.toLowerCase()) {
-                case "center" -> updateCenterScene(sceneName);
-                case "extra" -> createExtraScene(sceneName);
-                case "base" -> mainStage.setScene(new Scene(loadScene(sceneName).load()));
+                case "center" -> updateCenterScene(sceneConfiguration);
+                case "extra" -> createExtraScene(sceneConfiguration);
+                case "base" -> createBaseLayout(sceneConfiguration);
 //                case "componenet" ->
                 default -> throw new IllegalArgumentException("Invalid scene placement: " + scenePlacement);
             }
         } catch (IOException e) {
-            log.error("Error switching scene {}: {}", sceneName, e.getMessage());
+            log.error("Error switching scene {}: {}", sceneType, e.getMessage());
             throw new RuntimeException(e);
         }
+    }
+
+    private void createBaseLayout(SceneConfiguration sceneConfiguration) throws IOException {
+        FXMLLoader loader = loadScene(sceneConfiguration);
+        Parent load = loader.load();
+        Scene scene = new Scene(load);
+//        scene.getStylesheets().add(sceneConfiguration.getCssLight());
+        mainStage.setScene(scene);
+        mainStage.setResizable(sceneConfiguration.isResizable());
     }
 
     /**
      * Core scene update logic, handles placement, caching, and controller setup.
      */
-    private void updateCenterScene(String sceneName) throws IOException {
-        log.info("Updating scene: {}", sceneName);
+    private void updateCenterScene(SceneConfiguration configuration) throws IOException {
+        log.info("Updating scene: {}", configuration);
 
-        Parent scene = loadScene(sceneName).load();
+        FXMLLoader loader = loadScene(configuration);
+        Parent scene = loader.load();
+//        scene.getStylesheets().add(configuration.getCssLight());
         baseLayoutController.setRightContentPane(scene);
+
+        Platform.runLater(() -> {
+            Object controller = loader.getController();
+            if (controller instanceof DeferredSceneInit deferred) {
+                deferred.onSceneLoad();
+            }
+        });
     }
 
     /**
      * Creates an "extra" scene, which is a separate window (stage) for additional functionality.
      * This method is a placeholder and should be implemented in subclasses.
      */
-    private void createExtraScene(String sceneName) throws IOException {
-        Parent root = loadScene(sceneName).load();
+    private void createExtraScene(SceneConfiguration configuration) throws IOException {
+        Parent root = loadScene(configuration).load();
+//        root.getStylesheets().add(configuration.getCssLight());
         Scene scene = new Scene(root);
         Stage extraStage = new Stage();
 
-        log.info("Creating extra stage for scene: {}", sceneName);
+        log.info("Creating extra stage for scene: {}", configuration);
         extraStage.setScene(scene);
-        extraStage.setResizable(true);
+        extraStage.setResizable(configuration.isResizable());
 //        this.extraStage.setMaxHeight(ScreenBounds.getScreenBounds().getHeight());
 //        this.extraStage.setMaxWidth(ScreenBounds.getScreenBounds().getWidth());
         extraStage.sizeToScene();
@@ -131,9 +128,10 @@ public class SceneEngine {
         extraStage.showAndWait();
     }
 
-    public FXMLLoader createSceneComponent(String sceneName) {
+    public FXMLLoader createSceneComponent(SceneType sceneType) {
+        SceneConfiguration sceneConfiguration = sceneConfigurationLoader.load(sceneType);
         try {
-            return loadScene(sceneName);
+            return loadScene(sceneConfiguration);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -142,16 +140,15 @@ public class SceneEngine {
     /**
      * Helper to load an FXML scene by name from the sceneMap.
      */
-    private FXMLLoader loadScene(String name) throws IOException {
+    private FXMLLoader loadScene(SceneConfiguration configuration) throws IOException {
         try {
-            log.debug("Loading FXML for scene: {}", name);
-            String fxmlFile = sceneMap.get(name).getValue1();
+            log.debug("Loading FXML for scene: {}", configuration);
 
-            if (fxmlFile == null) {
-                throw new IllegalArgumentException("Scene not found in map: " + name);
+            if (configuration.getFxml() == null) {
+                throw new IllegalArgumentException("Scene not found in map: " + configuration.getId());
             }
 
-            return springFXMLLoader.load(fxmlFile);
+            return springFXMLLoader.load(configuration);
         } catch (IllegalArgumentException e) {
             throw new RuntimeException(e);
         }

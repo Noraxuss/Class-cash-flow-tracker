@@ -40,17 +40,16 @@ public class StartupProgressService {
         for (Map.Entry<String, Callable<Boolean>> entry : checks.entrySet()) {
             String description = entry.getKey();
 
+
             updateProgress(progress ,"Completed: " + description);
         }
-
     }
 
     /**
      * Updates the progress bar on the JavaFX Application Thread.
      */
-    private synchronized void  updateProgress(double progress, String message) {
+    private void  updateProgress(double progress, String message) {
         loadingController.updateProgress(progress, message);
-
     }
 
 }

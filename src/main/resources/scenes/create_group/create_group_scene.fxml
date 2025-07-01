@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="463.0"
+            prefWidth="307.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="cash_flow.controller.CreateGroupController">
+
+    <Label alignment="CENTER" contentDisplay="CENTER" layoutX="123.0" layoutY="14.0" text="%title_label"/>
+    <Label layoutX="12.0" layoutY="64.0" text="%group_name_label"/>
+    <TextField fx:id="nameTextField" layoutX="12.0" layoutY="115.0" prefHeight="99.0" prefWidth="274.0"/>
+    <TextField fx:id="descriptionTextField" layoutX="101.0" layoutY="60.0" prefHeight="25.0" prefWidth="186.0"/>
+    <Label layoutX="12.0" layoutY="90.0" text="%group_description_label"/>
+    <Label layoutX="12.0" layoutY="217.0" text="%start_date"/>
+    <Label layoutX="154.0" layoutY="217.0" text="%end_date"/>
+    <DatePicker fx:id="creationDate" layoutX="12.0" layoutY="238.0" prefHeight="26.0" prefWidth="137.0">
+        <tooltip>
+            <Tooltip text="%group_creation_date_choosing_tip"/>
+        </tooltip>
+    </DatePicker>
+    <DatePicker fx:id="endDate" layoutX="153.0" layoutY="238.0" prefHeight="26.0" prefWidth="137.0">
+        <tooltip>
+            <Tooltip text="%group_end_date_choosing_tip"/>
+        </tooltip>
+    </DatePicker>
+    <Button fx:id="createGroup" layoutX="28.0" layoutY="415.0" mnemonicParsing="false"
+            onMouseClicked="#createGroupButtonClicked" text="%create_group_button"/>
+    <Button fx:id="back" layoutX="194.0" layoutY="415.0" mnemonicParsing="false" onMouseClicked="#backButtonClicked"
+            text="%back_button"/>
+</AnchorPane>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<HBox fx:id="listCellContainer"
+      xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      spacing="12"
+      alignment="CENTER_LEFT"
+      styleClass="custom-cell">
+
+    <padding>
+        <Insets top="5" right="10" bottom="5" left="10"/>
+    </padding>
+
+
+    <Label fx:id="groupLabel" text="Group name">
+    </Label>
+</HBox>

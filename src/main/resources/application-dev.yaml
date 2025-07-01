@@ -9,7 +9,7 @@ spring:
   h2:
     console:
       enabled: true            # Enables the web console at /h2-console
-      path: /h2-console        # Optional: set custom path for H2 console
+#      path: /h2-console        # Optional: set custom path for H2 console
 
   flyway:
     enabled: true              # Enable Flyway for DB migrations
@@ -18,10 +18,11 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update         # Update schema automatically on startup (okay for dev only)
+      ddl-auto: none         # Update schema automatically on startup (okay for dev only)
     show-sql: true             # Print SQL queries to the console
     properties:
       hibernate:
+        physical_naming_strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl # Use standard naming strategy
         dialect: org.hibernate.dialect.H2Dialect  # Use H2 dialect for compatibility
 
   sql:

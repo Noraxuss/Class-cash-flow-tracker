@@ -1,0 +1,80 @@
+package cash_flow.service;
+
+import cash_flow.common.StatusResponses;
+import cash_flow.domain.Overseer;
+import cash_flow.domain.PersonType;
+import cash_flow.dto.incoming.OverseerCreationCommand;
+import cash_flow.dto.outgoing.OverseerSelectionDetails;
+import cash_flow.repository.OverseerRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Service
+@Slf4j
+public class OverseerService {
+
+    private final OverseerRepository overseerRepository;
+    private final ModelMapper modelMapper;
+    private final PersonService personService;
+
+    @Autowired
+    public OverseerService(OverseerRepository overseerRepository, ModelMapper modelMapper, PersonService personService) {
+        this.overseerRepository = overseerRepository;
+        this.modelMapper = modelMapper;
+        this.personService = personService;
+    }
+
+    public StatusResponses createNewOverseer(OverseerCreationCommand command) {
+        // Check if the command is null
+        if (command.getFirstName() == null || command.getLastName() == null) {
+            log.error("Overseer creation failed: First name or last name is null");
+            return StatusResponses.FAILURE;
+        }
+        // Check if an overseer with the same first and last name already exists
+        if (overseerRepository.existsByFirstNameAndLastNameAndEmail(
+                command.getFirstName(),
+                command.getLastName(),
+                command.getEmail())) {
+            log.error("Overseer creation failed: Overseer with name {} {} already exists", command.getFirstName(), command.getLastName());
+            return StatusResponses.ALREADY_EXISTS;
+        }
+        // Map the command to an Overseer entity and set additional properties
+        Overseer overseer = modelMapper.map(command, Overseer.class);
+
+        // Set the person type to Overseer
+        PersonType personType = PersonType.OVERSEER;
+        overseer.setPersonType(personType);
+
+        // Generate a unique ID for the overseer
+        Long idNumber = overseerRepository.count() + 1;
+        String id = personService.createPersonId(overseer, idNumber);
+        overseer.setId(id);
+
+        // Set the date of creation to the current date and time
+        overseer.setDateOfCreation(LocalDateTime.now());
+
+        // Save the overseer entity to the repository
+        overseerRepository.save(overseer);
+        log.info("New overseer created: {} {}", overseer.getFirstName(), overseer.getLastName());
+        return StatusResponses.SUCCESS;
+    }
+
+    public List<OverseerSelectionDetails> getOverSeerList() {
+        // Fetch all overseers from the repository
+        List<Overseer> overseerList = overseerRepository.findAll();
+
+        // Map the list of Overseer entities to a list of OverseerSelectionDetails DTOs
+        return modelMapper.map(overseerList,
+                new TypeToken<List<OverseerSelectionDetails>>() {
+                }.getType());
+    }
+
+
+}

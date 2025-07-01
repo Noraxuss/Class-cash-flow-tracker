@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<TitledPane animated="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="400.0" prefWidth="600.0" text="%title_pane_label" xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="cash_flow.controller.AddGroupMembersController">
+    <TableView fx:id="membersTableView" prefHeight="200.0" prefWidth="200.0">
+        <columns>
+            <TableColumn fx:id="firstNameColumn" prefWidth="75.0" text="%first_name_column"/>
+            <TableColumn fx:id="lastNameColumn" prefWidth="75.0" text="%last_name_column"/>
+            <TableColumn fx:id="emailColumn" prefWidth="75.0" text="%e-mail_column"/>
+            <TableColumn fx:id="joinDateColumn" prefWidth="75.0" text="%join_date_column"/>
+            <TableColumn fx:id="optionalColumn" prefWidth="75.0" text="%optional_column">
+                <columns>
+                    <TableColumn fx:id="parentFirstNameColumn" prefWidth="75.0" text="%parent_first_name"/>
+                    <TableColumn fx:id="parentLastNameColumn" prefWidth="75.0" text="%parent_last_name"/>
+                    <TableColumn fx:id="parentEmailColumn" prefWidth="75.0" text="%parent_e-mail_column"/>
+                </columns>
+            </TableColumn>
+        </columns>
+    </TableView>
+</TitledPane>

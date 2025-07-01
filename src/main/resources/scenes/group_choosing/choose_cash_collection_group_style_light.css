@@ -1,0 +1,25 @@
+/* Completely neutralize all default hover, focus, and selection visuals */
+.list-view .list-cell,
+.list-view .list-cell:hover,
+.list-view .list-cell:focused,
+.list-view .list-cell:selected,
+.list-view:focused .list-cell:selected,
+.list-view .list-cell:filled:selected,
+.list-view:focused .list-cell:filled:selected {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-padding: 0 5 0 5; /* Optional padding: top right bottom left */
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* Remove focus ring visuals from the entire ListView */
+.list-view:focused {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+}

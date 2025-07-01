@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.geometry.Insets?>
+
+<GridPane xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="cash_flow.controller.AddGroupOverseerScene"
+          hgap="20"
+          vgap="20">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="%overseer_first_name" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+    <TextField fx:id="firstName" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+    <Label text="%overseer_last_name" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+    <TextField fx:id="lastName" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+    <Label text="%overseer_e-mail" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+    <TextField fx:id="email" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+    <Label fx:id="systemResponseLabel" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+
+    <Button fx:id="createNewOverseer"
+            text="%create_new_overseer"
+            onAction="#handleCreateNewOverseer"
+            GridPane.rowIndex="3"
+            GridPane.columnIndex="1"/>
+
+</GridPane>

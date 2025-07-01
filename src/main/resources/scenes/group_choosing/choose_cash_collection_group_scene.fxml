@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
+
+<VBox xmlns="http://javafx.com/javafx/23.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="cash_flow.controller.ChooseCashCollectionGroupController"
+      prefHeight="400.0"
+      prefWidth="280.0"
+      maxHeight="-Infinity" maxWidth="-Infinity"
+      minHeight="-Infinity" minWidth="-Infinity">
+
+    <padding>
+        <Insets top="10.0" right="10.0" bottom="10.0" left="10.0"/>
+    </padding>
+
+    <!-- Horizontally aligned label and ComboBox with spacing -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label fx:id="groupOverseer" text="%choose_group_overseer"/>
+        <ComboBox fx:id="groupOverseerBox" prefWidth="150"/>
+    </HBox>
+
+    <!-- Add spacing below the HBox -->
+    <VBox.margin>
+        <Insets top="0" bottom="20"/>
+    </VBox.margin>
+
+    <!-- Add New Overseer Button -->
+    <Button fx:id="addNewOverseerButton"
+            text="%add_new_overseer_button"
+            onAction="#handleAddNewOverseerButtonClick">
+        <tooltip>
+            <Tooltip text="%add_new_overseer_tooltip"/>
+        </tooltip>
+    </Button>
+
+    <VBox.margin>
+        <Insets top="0" bottom="20"/>
+    </VBox.margin>
+
+    <!-- Separator -->
+    <Separator prefHeight="5" prefWidth="Infinity"/>
+
+    <!-- Cash Collection Group Label -->
+    <Label fx:id="cashCollectionGroupLabel"
+           text="%cash_collection_group_label"/>
+
+    <!-- ListView with expanded size -->
+    <ListView fx:id="cashCollectionGroupListView"
+              prefHeight="350.0"
+              prefWidth="280.0"
+              onMouseClicked="#handleCashCollectionGroupListViewClick"
+              fixedCellSize="35.0">
+        <tooltip>
+            <Tooltip text="%cash_collection_group_list_tooltip"/>
+        </tooltip>
+    </ListView>
+
+</VBox>

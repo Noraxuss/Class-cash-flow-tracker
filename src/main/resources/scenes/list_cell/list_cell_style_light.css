@@ -1,0 +1,63 @@
+/* Reset default JavaFX ListCell */
+.list-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-padding: 0;
+    -fx-cell-size: 35px;
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* Remove all selection & focus styling */
+.list-cell:selected,
+.list-cell:filled:selected,
+.list-cell:focused,
+.custom-cell:selected,
+.custom-cell:filled:selected,
+.custom-cell:focused {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+}
+
+/* Base ListCell look */
+.custom-cell {
+    -fx-padding: 8 12 8 12;
+    -fx-background-color: transparent;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+}
+
+.list-cell:hover {
+    -fx-background-color: transparent;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: transparent;
+}
+
+/* Hover effect — matches padding */
+.custom-cell:hover{
+    -fx-background-color: #588af3;
+    -fx-background-radius: 6px;
+    -fx-text-fill: white;
+}
+
+/* Optional: "Add new" label */
+.add-new {
+    -fx-font-style: italic;
+    -fx-text-fill: #00cc0a;
+}
+
+/* Label inside cell */
+#groupLabel {
+    -fx-padding: 0 0 0 16;
+    -fx-text-fill: black;
+    -fx-font-size: 14px;
+}
