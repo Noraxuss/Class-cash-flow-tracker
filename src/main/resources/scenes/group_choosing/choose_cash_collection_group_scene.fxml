@@ -9,49 +9,54 @@
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="cash_flow.controller.ChooseCashCollectionGroupController"
       prefHeight="400.0"
-      prefWidth="280.0"
-      maxHeight="-Infinity" maxWidth="-Infinity"
-      minHeight="-Infinity" minWidth="-Infinity">
+      prefWidth="400.0"
+      minHeight="400.0"
+      minWidth="400.0"
+      spacing="10">
 
     <padding>
         <Insets top="10.0" right="10.0" bottom="10.0" left="10.0"/>
     </padding>
 
-    <!-- Horizontally aligned label and ComboBox with spacing -->
+    <!-- Overseer selection -->
     <HBox spacing="10" alignment="CENTER_LEFT">
         <Label fx:id="groupOverseer" text="%choose_group_overseer"/>
-        <ComboBox fx:id="groupOverseerBox" prefWidth="150"/>
+        <ComboBox fx:id="groupOverseerBox" prefWidth="230"/>
     </HBox>
 
-    <!-- Add spacing below the HBox -->
-    <VBox.margin>
-        <Insets top="0" bottom="20"/>
-    </VBox.margin>
+    <!-- System response label (conditionally visible) -->
+    <HBox alignment="CENTER_LEFT">
+        <Label fx:id="systemResponseLabel"
+               wrapText="true"
+               visible="false"
+               managed="false"
+               style="-fx-text-fill: red;"
+               maxWidth="360"/>
+    </HBox>
 
-    <!-- Add New Overseer Button -->
-    <Button fx:id="addNewOverseerButton"
-            text="%add_new_overseer_button"
-            onAction="#handleAddNewOverseerButtonClick">
-        <tooltip>
-            <Tooltip text="%add_new_overseer_tooltip"/>
-        </tooltip>
-    </Button>
-
-    <VBox.margin>
-        <Insets top="0" bottom="20"/>
-    </VBox.margin>
+    <!-- Add New Overseer Button aligned with content -->
+    <HBox alignment="CENTER_LEFT">
+        <Button fx:id="addNewOverseerButton"
+                text="%add_new_overseer_button"
+                onAction="#handleAddNewOverseerButtonClick">
+            <tooltip>
+                <Tooltip text="%add_new_overseer_tooltip"/>
+            </tooltip>
+            <padding>
+                <Insets top="5" right="10" bottom="5" left="10"/>
+            </padding>
+        </Button>
+    </HBox>
 
     <!-- Separator -->
     <Separator prefHeight="5" prefWidth="Infinity"/>
 
-    <!-- Cash Collection Group Label -->
+    <!-- Group Label -->
     <Label fx:id="cashCollectionGroupLabel"
            text="%cash_collection_group_label"/>
 
-    <!-- ListView with expanded size -->
+    <!-- List of Cash Collection Groups -->
     <ListView fx:id="cashCollectionGroupListView"
-              prefHeight="350.0"
-              prefWidth="280.0"
               onMouseClicked="#handleCashCollectionGroupListViewClick"
               fixedCellSize="35.0">
         <tooltip>

@@ -10,6 +10,6 @@ import org.springframework.stereotype.Component;
 @Setter
 public abstract class SelectionParentClass {
 
-    private Long id;
+    private String id;
     private String name;
 }

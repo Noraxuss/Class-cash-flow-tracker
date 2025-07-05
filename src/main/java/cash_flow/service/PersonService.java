@@ -1,6 +1,8 @@
 package cash_flow.service;
 
 import cash_flow.domain.Overseer;
+import cash_flow.dto.outgoing.OverseerSelectionDetails;
+import cash_flow.dto.outgoing.SelectionParentClass;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +29,17 @@ public class PersonService {
         personId.append(LocalDate.now().getMonthValue());
         personId.append(LocalDate.now().getDayOfMonth());
         return personId.toString();
+    }
+
+    public SelectionParentClass createSelectionDetails(Overseer overseer) {
+        if (overseer == null) {
+            log.error("Overseer is null, cannot create selection details.");
+            return null;
+        }
+        SelectionParentClass selectionDetails = new OverseerSelectionDetails();
+        selectionDetails.setId(overseer.getId());
+        selectionDetails.setName(overseer.getFirstName() + " " + overseer.getLastName());
+        return selectionDetails;
     }
 
 }

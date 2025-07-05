@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -71,10 +72,27 @@ public class OverseerService {
         List<Overseer> overseerList = overseerRepository.findAll();
 
         // Map the list of Overseer entities to a list of OverseerSelectionDetails DTOs
-        return modelMapper.map(overseerList,
-                new TypeToken<List<OverseerSelectionDetails>>() {
-                }.getType());
+        List<OverseerSelectionDetails> overseerSelectionDetails = new ArrayList<>();
+        overseerList.forEach(overseer -> {
+            OverseerSelectionDetails details = (OverseerSelectionDetails)
+                    personService.createSelectionDetails(overseer);
+            if (details != null) {
+                overseerSelectionDetails.add(details);
+            }
+        });
+        return overseerSelectionDetails;
     }
 
 
+    /**
+     * Retrieves an overseer by their ID.
+     *
+     * @param id the ID of the overseer to retrieve
+     * @return the Overseer object if found
+     * @throws IllegalArgumentException if no overseer with the given ID exists
+     */
+    public Overseer getOverseerById(String id) {
+        return overseerRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Overseer with ID " + id + " not found"));
+    }
 }

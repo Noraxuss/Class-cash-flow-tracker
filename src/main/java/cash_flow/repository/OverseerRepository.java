@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface OverseerRepository extends JpaRepository<Overseer,Long> {
+public interface OverseerRepository extends JpaRepository<Overseer,String> {
 
     @Query(value = "SELECT EXISTS (" +
             "SELECT 1 FROM overseers " +

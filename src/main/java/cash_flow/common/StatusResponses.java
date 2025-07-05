@@ -6,9 +6,9 @@ import lombok.Getter;
 public enum StatusResponses {
 
     SUCCESS("Success"),
-    ALREADY_EXISTS("Already Exists"),
-    FAILURE("Failure"),
-    NOT_FOUND("Not Found"),
+    ALREADY_EXISTS("already Exists"),
+    FAILURE("failed to complete the operation"),
+    NOT_FOUND("not Found"),
     UNAUTHORIZED("Unauthorized"),
     FORBIDDEN("Forbidden"),
     BAD_REQUEST("Bad Request"),

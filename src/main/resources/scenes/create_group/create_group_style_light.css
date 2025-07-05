@@ -1,0 +1,65 @@
+/* DatePicker text field part */
+.date-picker .text-field {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #cccccc;
+    -fx-text-fill: #1e1e1e;
+    -fx-border-radius: 6px 0 0 6px; /* rounded left corners */
+    -fx-background-radius: 6px 0 0 6px;
+    -fx-padding: 0.25em 0.5em;
+}
+
+/* DatePicker arrow button */
+.date-picker .arrow-button {
+    -fx-background-color: #afb3d5;
+    -fx-background-radius: 0 6px 6px 0; /* rounded right corners */
+    -fx-padding: 0.25em 0.5em;
+}
+
+/* Arrow icon inside the button */
+.date-picker .arrow-button .arrow {
+    -fx-background-color: white;
+}
+
+/* Hover effect for arrow button */
+.date-picker .arrow-button:hover {
+    -fx-background-color: #5a6287;
+}
+
+/* When disabled */
+.date-picker:disabled .text-field,
+.date-picker:disabled .arrow-button {
+    -fx-opacity: 0.5;
+}
+
+/* Style the popup window of DatePicker */
+.date-picker-popup {
+    -fx-background-color: transparent;
+    -fx-background-radius: 12px;
+    -fx-border-radius: 12px;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8, 0, 0, 2);
+}
+
+/* Content inside the popup */
+.date-picker-popup .content {
+    -fx-background-color: transparent; /* or white if you want */
+    -fx-background-radius: 12px;
+    -fx-border-radius: 12px;
+}
+
+/* Style the calendar grid */
+.date-picker-popup .calendar-grid {
+    -fx-background-color: transparent;
+    -fx-padding: 0.5em;
+}
+
+/* Inner containers of popup */
+.date-picker-popup .list-view,
+.date-picker-popup .scroll-pane,
+.date-picker-popup .virtual-flow {
+    -fx-background-color: transparent;
+    -fx-background-radius: 12px;
+    -fx-border-radius: 12px;
+    -fx-border-color: transparent;
+}

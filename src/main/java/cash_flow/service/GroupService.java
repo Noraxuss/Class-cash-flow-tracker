@@ -1,12 +1,19 @@
 package cash_flow.service;
 
+import cash_flow.common.ErrorUtilities;
+import cash_flow.common.StatusResponses;
+import cash_flow.domain.Group;
+import cash_flow.domain.Overseer;
+import cash_flow.dto.incoming.GroupCreationCommand;
+import cash_flow.dto.outgoing.GroupSelectionDetails;
 import cash_flow.dto.outgoing.OverseerSelectionDetails;
-import cash_flow.dto.outgoing.SelectionParentClass;
 import cash_flow.repository.GroupRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -14,9 +21,62 @@ import java.util.List;
 public class GroupService {
 
     private final GroupRepository groupRepository;
+    private final ModelMapper modelMapper;
+    private final OverseerService overseerService;
+    private final ErrorUtilities errorUtilities;
 
     @Autowired
-    public GroupService(GroupRepository groupRepository) {
+    public GroupService(GroupRepository groupRepository, ModelMapper modelMapper, OverseerService overseerService, ErrorUtilities errorUtilities) {
         this.groupRepository = groupRepository;
+        this.modelMapper = modelMapper;
+        this.overseerService = overseerService;
+        this.errorUtilities = errorUtilities;
+    }
+
+    public List<GroupSelectionDetails> getOverseerGroups(OverseerSelectionDetails selectedOverseer) {
+        Overseer overseer = overseerService.getOverseerById(selectedOverseer.getId());
+
+        List<Group> groups = groupRepository.findAllByOverseer(overseer);
+
+        GroupSelectionDetails groupSelectionDetails = new GroupSelectionDetails();
+        groupSelectionDetails.setGroupId(0L);
+        groupSelectionDetails.setName("Új csoport");
+        groupSelectionDetails.setDescription("Új csoport létrehozása");
+
+        List<GroupSelectionDetails> groupSelectionDetailsList = new ArrayList<>();
+        groupSelectionDetailsList.add(groupSelectionDetails);
+        if (!groups.isEmpty()) {
+            for (Group group : groups) {
+                GroupSelectionDetails groupDetails = modelMapper.map(group, GroupSelectionDetails.class);
+                groupSelectionDetailsList.add(groupDetails);
+                log.info("Retrieved {} groups for overseer: {}", groupSelectionDetailsList.size(), selectedOverseer.getName());
+            }
+        } else {
+            log.info("No groups found for overseer: {}", selectedOverseer.getName());
+        }
+
+
+        return groupSelectionDetailsList;
+    }
+
+    public Long createGroup(GroupCreationCommand groupCreationCommand) {
+        if (groupCreationCommand == null || groupCreationCommand.getOverseerId() == null) {
+            log.error("Group creation failed: GroupCreationCommand or Overseer is null");
+            // TODO make systemResponse appear on various scenes
+        }
+
+        Overseer overseer = overseerService.getOverseerById(groupCreationCommand.getOverseerId());
+        if (overseer == null) {
+            log.error("Group creation failed: Overseer not found with ID {}",
+                    groupCreationCommand.getOverseerId());
+            // TODO make systemResponse appear on various scenes
+        }
+
+        Group group = modelMapper.map(groupCreationCommand, Group.class);
+        group.setOverseer(overseer);
+        groupRepository.save(group);
+
+        log.info("Group created successfully with ID: {}", group.getId());
+        return group.getId();
     }
 }

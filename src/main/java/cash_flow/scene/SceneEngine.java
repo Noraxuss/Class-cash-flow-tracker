@@ -1,6 +1,8 @@
 package cash_flow.scene;
 
 import cash_flow.application.SpringFXMLLoader;
+import cash_flow.context.AppContext;
+import cash_flow.context.StageContext;
 import cash_flow.controller.BaseLayoutController;
 import cash_flow.controller.DeferredSceneInit;
 import cash_flow.style_manager.StyleManager;
@@ -25,6 +27,7 @@ public class SceneEngine {
     private final BaseLayoutController baseLayoutController;
     private final SceneConfigurationLoader sceneConfigurationLoader;
     private final StyleManager styleManager;
+    private final AppContext appContext;
 
     @Setter
     private Stage mainStage;
@@ -32,11 +35,13 @@ public class SceneEngine {
     @Autowired
     public SceneEngine(SpringFXMLLoader springFXMLLoader,
                        BaseLayoutController baseLayoutController,
-                       SceneConfigurationLoader sceneConfigurationLoader, StyleManager styleManager) {
+                       SceneConfigurationLoader sceneConfigurationLoader,
+                       StyleManager styleManager, AppContext appContext) {
         this.springFXMLLoader = springFXMLLoader;
         this.baseLayoutController = baseLayoutController;
         this.sceneConfigurationLoader = sceneConfigurationLoader;
         this.styleManager = styleManager;
+        this.appContext = appContext;
     }
 
     /**
@@ -111,7 +116,9 @@ public class SceneEngine {
      * This method is a placeholder and should be implemented in subclasses.
      */
     private void createExtraScene(SceneConfiguration configuration) throws IOException {
-        Parent root = loadScene(configuration).load();
+        FXMLLoader fxmlLoader = loadScene(configuration);
+
+        Parent root = fxmlLoader.load();
 //        root.getStylesheets().add(configuration.getCssLight());
         Scene scene = new Scene(root);
         Stage extraStage = new Stage();
@@ -126,6 +133,8 @@ public class SceneEngine {
         extraStage.initOwner(mainStage);
         extraStage.initModality(Modality.WINDOW_MODAL);
         extraStage.showAndWait();
+
+        appContext.getStageContext().setScenes();
     }
 
     public FXMLLoader createSceneComponent(SceneType sceneType) {
@@ -154,5 +163,8 @@ public class SceneEngine {
         }
     }
 
+    public void closeScene(SceneType scene) {
+
+    }
 
 }

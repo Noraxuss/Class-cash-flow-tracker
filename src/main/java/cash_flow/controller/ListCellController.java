@@ -1,6 +1,7 @@
 package cash_flow.controller;
 
 import cash_flow.controller.utilities.ControllerUtilities;
+import cash_flow.dto.outgoing.GroupSelectionDetails;
 import cash_flow.dto.outgoing.SelectionParentClass;
 import cash_flow.scene.SceneConfiguration;
 import cash_flow.scene.SceneConfigurationLoader;
@@ -9,13 +10,11 @@ import cash_flow.scene.SceneType;
 import cash_flow.style_manager.Style;
 import cash_flow.style_manager.StyleManager;
 import cash_flow.style_manager.ThemeChangeListener;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.layout.HBox;
-import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -76,7 +75,7 @@ implements ThemeChangeListener{
     }
 
     @Override
-    protected void updateItem(SelectionParentClass item, boolean empty) {
+    public void updateItem(SelectionParentClass item, boolean empty) {
         // Always call the superclass method first to preserve default behavior
         super.updateItem(item, empty);
 

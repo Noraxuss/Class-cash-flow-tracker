@@ -11,12 +11,10 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
-import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -54,13 +52,13 @@ public class LoadingController implements DeferredSceneInit, ThemeChangeListener
     @FXML
     public synchronized void updateProgress(double progress, String message) {
 
-            progressBar.setProgress(progressBar.getProgress() + progress);
-            statusLabel.setText(message);
-            log.info("Updating progress to [{}] with message [{}]", progressBar.getProgress(), message);
+        progressBar.setProgress(progressBar.getProgress() + progress);
+        statusLabel.setText(message);
+        log.info("Updating progress to [{}] with message [{}]", progressBar.getProgress(), message);
 
-            if (progressBar.getProgress() >= 1.0) {
-                sceneEngine.switchScene(SceneType.GROUP_CHOOSING);
-            }
+        if (progressBar.getProgress() >= 1.0) {
+            sceneEngine.switchScene(SceneType.GROUP_CHOOSING);
+        }
 
 
 //        try {
