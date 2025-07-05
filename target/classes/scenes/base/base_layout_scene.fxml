@@ -22,22 +22,8 @@
             <MenuItem mnemonicParsing="false" text="About"/>
         </Menu>
     </MenuBar>
-
-    <SplitPane dividerPositions="0.2818080357142857" prefHeight="160.0" prefWidth="200.0">
-        <SplitPane dividerPositions="0.5" orientation="VERTICAL"
-                   prefHeight="366.0" prefWidth="122.0">
-            <MenuBar fx:id="leftSubMenuBar">
-                <Menu mnemonicParsing="false" text="Unspecified Menu">
-                    <MenuItem mnemonicParsing="false" text="Action 1"/>
-                    <MenuItem mnemonicParsing="false" text="Unspecified Action"/>
-                </Menu>
-            </MenuBar>
-            <TreeView fx:id="collectionGroupDataTree" prefHeight="230.0" prefWidth="165.0"/>
-        </SplitPane>
-
-        <VBox fx:id="rightContentPane" prefHeight="366.0" prefWidth="200.0">
-            <Label layoutX="14.0" layoutY="14.0" text="Right Content Pane"/>
-            <Button layoutX="14.0" layoutY="50.0" text="Action Button"/>
-        </VBox>
+    <SplitPane>
+        <VBox fx:id="rightContentPane" />
+        <VBox fx:id="leftContentPane" />
     </SplitPane>
 </SplitPane>

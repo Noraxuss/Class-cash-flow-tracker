@@ -15,6 +15,17 @@ import java.util.EnumMap;
 @Setter
 public class StageContext {
 
-    private EnumMap<SceneType, Stage> scenes = new EnumMap<>(SceneType.class);
+    private EnumMap<SceneType, Stage> extraStages = new EnumMap<>(SceneType.class);
+
+    /**
+     * Adds a new stage for the given scene type.
+     *
+     * @param sceneType the type of scene for which the stage is being added
+     * @param stage     the stage to be added
+     */
+    public void addStage(SceneType sceneType, Stage stage) {
+        log.info("Adding stage for scene type: {}", sceneType);
+        extraStages.put(sceneType, stage);
+    }
 
 }

@@ -11,7 +11,10 @@ public enum SceneType {
     ADD_GROUP_MEMBERS("/scenes/add_group_members/add_group_members_scene.properties"),
     CREATE_GROUP("/scenes/create_group/create_group_scene.properties"),
     LIST_CELL("/scenes/list_cell/list_cell_scene.properties"),
-    GROUP_CHOOSING("/scenes/group_choosing/choose_cash_collection_group_scene.properties");
+    GROUP_CHOOSING("/scenes/group_choosing/choose_cash_collection_group_scene.properties"),
+    GROUP_DATA("/scenes/group_data/group_data_scene.properties"),
+    MEMBER_DATA("/scenes/member_data/member_data_scene.properties");
+
 
     private final String propertiesFilePath;
 
