@@ -118,14 +118,13 @@ public class SceneEngine {
     }
 
     private void updateCenterScene(SceneConfiguration configuration) throws IOException {
-
         baseLayoutController.clearCenterContentPane();
 
         log.info("Updating scene: {}", configuration);
 
         FXMLLoader loader = loadScene(configuration);
         Parent scene = loader.load();
-        baseLayoutController.setCenterContentPane(scene);
+        baseLayoutController.setCenterContentPanes(scene);
 
         Platform.runLater(() -> {
             Object controller = loader.getController();

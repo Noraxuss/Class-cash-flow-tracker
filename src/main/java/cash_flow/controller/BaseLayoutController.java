@@ -42,13 +42,13 @@ public class BaseLayoutController implements ThemeChangeListener {
         controllerUtilities.initializeSceneStyle(mainMenuBar, this);
     }
 
-    public void setCenterContentPane(Node ...contentPane) {
+    public void setCenterContentPanes(Node ...contentPane) {
         if (contentPane == null || contentPane.length == 0) {
             log.warn("No content provided to setRightContentPane");
             return;
         }
         centerSplitPane.getItems().addAll(contentPane);
-        log.info("Right content pane set with {} items", contentPane.length);
+        log.info("Content pane set with {} items", contentPane.length);
     }
 
     public void clearCenterContentPane() {
