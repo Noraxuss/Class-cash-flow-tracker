@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.Pane?>
 <SplitPane dividerPositions="0.5"
            maxHeight="-Infinity" maxWidth="-Infinity"
            minHeight="-Infinity" minWidth="-Infinity"
@@ -22,5 +23,5 @@
             <MenuItem mnemonicParsing="false" text="About"/>
         </Menu>
     </MenuBar>
-    <SplitPane fx:id="centerSplitPane" />
+    <Pane fx:id="centerPane" />
 </SplitPane>

@@ -22,8 +22,5 @@
             <MenuItem mnemonicParsing="false" text="About"/>
         </Menu>
     </MenuBar>
-    <SplitPane>
-        <VBox fx:id="rightContentPane" />
-        <VBox fx:id="leftContentPane" />
-    </SplitPane>
+    <SplitPane fx:id="centerSplitPane" />
 </SplitPane>

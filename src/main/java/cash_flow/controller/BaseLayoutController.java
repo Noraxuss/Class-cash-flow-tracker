@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.SplitPane;
+import javafx.scene.layout.Pane;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +20,7 @@ public class BaseLayoutController implements ThemeChangeListener {
     public MenuBar mainMenuBar;
 
     @FXML
-    public SplitPane centerSplitPane;
+    public Pane centerPane;
 
 //    @FXML
 //    public VBox rightContentPane;
@@ -42,24 +43,26 @@ public class BaseLayoutController implements ThemeChangeListener {
         controllerUtilities.initializeSceneStyle(mainMenuBar, this);
     }
 
-    public void setCenterContentPanes(Node ...contentPane) {
-        if (contentPane == null || contentPane.length == 0) {
-            log.warn("No content provided to setRightContentPane");
-            return;
+    public void setCenterContentPanes(Node node) {
+        clearCenterContentPane();
+        if (centerPane.getChildren().isEmpty()) {
+            centerPane.getChildren().add(node);
+            log.info("Node added to center content pane");
+        } else {
+            centerPane.getChildren().set(0, node);
+            log.info("Node replaced in center content pane");
         }
-        centerSplitPane.getItems().addAll(contentPane);
-        log.info("Content pane set with {} items", contentPane.length);
     }
 
     public void clearCenterContentPane() {
-        centerSplitPane.getItems().clear();
+        centerPane.getChildren().clear();
         log.info("Center content pane cleared");
     }
 
 
     @Override
     public void onThemeChanged(Style newTheme) {
-        styleManager.toggleSceneStyle(centerSplitPane.getScene(), this);
+        styleManager.toggleSceneStyle(centerPane.getScene(), this);
     }
 
 }
