@@ -2,7 +2,6 @@ package cash_flow.scene;
 
 import cash_flow.application.SpringFXMLLoader;
 import cash_flow.context.AppContext;
-import cash_flow.context.StageContext;
 import cash_flow.controller.BaseLayoutController;
 import cash_flow.controller.DeferredSceneInit;
 import cash_flow.style_manager.StyleManager;
@@ -23,6 +22,12 @@ import java.io.IOException;
 @Slf4j
 public class SceneEngine {
 
+    /**
+     * The SceneEngine is responsible for managing the application's scenes.
+     * It handles scene switching, loading FXML files, and applying styles.
+     * This class is a Spring component and uses dependency injection for its dependencies.
+     */
+
     private final SpringFXMLLoader springFXMLLoader;
     private final BaseLayoutController baseLayoutController;
     private final SceneConfigurationLoader sceneConfigurationLoader;
@@ -32,6 +37,15 @@ public class SceneEngine {
     @Setter
     private Stage mainStage;
 
+    /**
+     * Constructor for SceneEngine, initializes the dependencies.
+     *
+     * @param springFXMLLoader        the loader for FXML files
+     * @param baseLayoutController    the controller for the base layout
+     * @param sceneConfigurationLoader the loader for scene configurations
+     * @param styleManager            the manager for styles
+     * @param appContext              the application context
+     */
     @Autowired
     public SceneEngine(SpringFXMLLoader springFXMLLoader,
                        BaseLayoutController baseLayoutController,
@@ -45,7 +59,11 @@ public class SceneEngine {
     }
 
     /**
-     * Initializes the primary stage with a base scene and a starter scene.
+     * Initializes the main stage with the specified starter scene and loading scene.
+     * This method sets up the initial scene and displays the main stage.
+     *
+     * @param starterScene the initial scene to display
+     * @param loading      the loading scene to show while initializing
      */
     public void initializeStage(SceneType starterScene, SceneType loading) {
         log.info("Initializing stage with starter scene: {}", starterScene);
@@ -54,13 +72,14 @@ public class SceneEngine {
         mainStage.show();
         switchScene(loading);
 
-
-
         log.debug("Stage initialized and shown.");
     }
 
     /**
-     * Switches the displayed scene based on its logical placement.
+     * Switches the current scene to the specified scene type.
+     * This method handles different placements of scenes (center, extra, base) based on the configuration.
+     *
+     * @param sceneType the type of scene to switch to
      */
     public void switchScene(SceneType sceneType) {
         SceneConfiguration sceneConfiguration = sceneConfigurationLoader.load(sceneType);
@@ -72,9 +91,8 @@ public class SceneEngine {
         try {
             switch (scenePlacement.toLowerCase()) {
                 case "center" -> updateCenterScene(sceneConfiguration);
-                case "extra" -> createExtraScene(sceneConfiguration);
+                case "extra" -> createExtraScene(sceneConfiguration, sceneType);
                 case "base" -> createBaseLayout(sceneConfiguration);
-//                case "componenet" ->
                 default -> throw new IllegalArgumentException("Invalid scene placement: " + scenePlacement);
             }
         } catch (IOException e) {
@@ -83,25 +101,30 @@ public class SceneEngine {
         }
     }
 
+    /**
+     * Creates the base layout for the application.
+     * This method sets up the main stage with the base layout scene.
+     *
+     * @param sceneConfiguration the configuration for the base layout scene
+     * @throws IOException if the FXML file cannot be loaded
+     */
     private void createBaseLayout(SceneConfiguration sceneConfiguration) throws IOException {
+        log.info("Creating base layout for scene: {}", sceneConfiguration);
         FXMLLoader loader = loadScene(sceneConfiguration);
         Parent load = loader.load();
         Scene scene = new Scene(load);
-//        scene.getStylesheets().add(sceneConfiguration.getCssLight());
         mainStage.setScene(scene);
         mainStage.setResizable(sceneConfiguration.isResizable());
     }
 
-    /**
-     * Core scene update logic, handles placement, caching, and controller setup.
-     */
     private void updateCenterScene(SceneConfiguration configuration) throws IOException {
+        baseLayoutController.clearCenterContentPane();
+
         log.info("Updating scene: {}", configuration);
 
         FXMLLoader loader = loadScene(configuration);
         Parent scene = loader.load();
-//        scene.getStylesheets().add(configuration.getCssLight());
-        baseLayoutController.setRightContentPane(scene);
+        baseLayoutController.setCenterContentPanes(scene);
 
         Platform.runLater(() -> {
             Object controller = loader.getController();
@@ -112,10 +135,14 @@ public class SceneEngine {
     }
 
     /**
-     * Creates an "extra" scene, which is a separate window (stage) for additional functionality.
-     * This method is a placeholder and should be implemented in subclasses.
+     * Creates an extra scene displayed as a modal dialog.
+     * This method is used for scenes that require user interaction without leaving the main scene.
+     *
+     * @param configuration the scene configuration containing FXML and CSS paths
+     * @param sceneType     the type of scene to create
+     * @throws IOException if the FXML file cannot be loaded
      */
-    private void createExtraScene(SceneConfiguration configuration) throws IOException {
+    private void createExtraScene(SceneConfiguration configuration, SceneType sceneType) throws IOException {
         FXMLLoader fxmlLoader = loadScene(configuration);
 
         Parent root = fxmlLoader.load();
@@ -134,9 +161,16 @@ public class SceneEngine {
         extraStage.initModality(Modality.WINDOW_MODAL);
         extraStage.showAndWait();
 
-        appContext.getStageContext().setScenes();
+        appContext.getStageContext().addStage(sceneType, extraStage);// Store the extra stage in the context
     }
 
+    /**
+     * Creates a scene component for the given scene type.
+     * This method loads the FXML and applies any necessary styles.
+     *
+     * @param sceneType the type of scene to create
+     * @return FXMLLoader instance for the loaded scene
+     */
     public FXMLLoader createSceneComponent(SceneType sceneType) {
         SceneConfiguration sceneConfiguration = sceneConfigurationLoader.load(sceneType);
         try {
@@ -147,7 +181,12 @@ public class SceneEngine {
     }
 
     /**
-     * Helper to load an FXML scene by name from the sceneMap.
+     * Loads the FXML file for the given scene configuration.
+     * This method is responsible for loading the FXML and applying any necessary styles.
+     *
+     * @param configuration the scene configuration containing FXML and CSS paths
+     * @return FXMLLoader instance for the loaded scene
+     * @throws IOException if the FXML file cannot be loaded
      */
     private FXMLLoader loadScene(SceneConfiguration configuration) throws IOException {
         try {

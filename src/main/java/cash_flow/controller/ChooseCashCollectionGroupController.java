@@ -161,10 +161,10 @@ public class ChooseCashCollectionGroupController implements ThemeChangeListener 
      * @param selectedOverseer the overseer whose groups are to be loaded
      */
     private void loadOverseerGroups(OverseerSelectionDetails selectedOverseer) {
-
+        cashCollectionGroupObservableList.clear();
         cashCollectionGroupObservableList.addAll(groupService.getOverseerGroups(selectedOverseer)); // Fetch groups for the selected overseer
 
-        // Clear previous list before adding
+        // Clear a previous list before adding
         cashCollectionGroupListView.getItems().clear();
 
         // Add real group items
@@ -185,6 +185,10 @@ public class ChooseCashCollectionGroupController implements ThemeChangeListener 
     /**
      * Handles mouse clicks on the ListView items.
      * Shows the selected group or reacts to "Add New" item.
+     * This method is triggered when the user clicks on a group in the ListView.
+     * It checks if the clicked item is a valid group or the "Add New" item.
+     * If a valid group is selected, it sets the group ID in the application context
+     * and closes the current stage.
      * @param event the MouseEvent triggered by the click
      */
     @FXML
@@ -197,6 +201,9 @@ public class ChooseCashCollectionGroupController implements ThemeChangeListener 
             if (selectedItem != null && !"Új csoport".equals(selectedItem.getName())) {
                 // Handle regular group selection
                 log.info("Selected Cash Collection Group: {}", selectedItem);
+                appContext.getGroupContext().setGroupId(selectedItem.getGroupId());
+                Stage stage = (Stage) cashCollectionGroupListView.getScene().getWindow();
+                stage.close(); // Close the current stage
 
             } else if (selectedItem != null) {
                 // Handle the "Add New" item

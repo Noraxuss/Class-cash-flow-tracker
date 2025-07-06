@@ -4,15 +4,11 @@ import cash_flow.controller.utilities.ControllerUtilities;
 import cash_flow.style_manager.Style;
 import cash_flow.style_manager.StyleManager;
 import cash_flow.style_manager.ThemeChangeListener;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.MenuBar;
-import javafx.scene.control.TreeView;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
+import javafx.scene.control.SplitPane;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -23,16 +19,17 @@ public class BaseLayoutController implements ThemeChangeListener {
     public MenuBar mainMenuBar;
 
     @FXML
-    public MenuBar leftSubMenuBar;
+    public SplitPane centerSplitPane;
 
-    @FXML
-    public TreeView collectionGroupDataTree;
-
-    @FXML
-    public VBox rightContentPane;
+//    @FXML
+//    public VBox rightContentPane;
+//
+//    @FXML
+//    public VBox leftContentPane;
 
     private final StyleManager styleManager;
     private final ControllerUtilities controllerUtilities;
+
 
     public BaseLayoutController(StyleManager styleManager, ControllerUtilities controllerUtilities) {
         this.styleManager = styleManager;
@@ -45,14 +42,24 @@ public class BaseLayoutController implements ThemeChangeListener {
         controllerUtilities.initializeSceneStyle(mainMenuBar, this);
     }
 
-    public void setRightContentPane(Node rightContentPane) {
-        this.rightContentPane.getChildren().setAll(rightContentPane);
+    public void setCenterContentPanes(Node ...contentPane) {
+        if (contentPane == null || contentPane.length == 0) {
+            log.warn("No content provided to setRightContentPane");
+            return;
+        }
+        centerSplitPane.getItems().addAll(contentPane);
+        log.info("Content pane set with {} items", contentPane.length);
+    }
+
+    public void clearCenterContentPane() {
+        centerSplitPane.getItems().clear();
+        log.info("Center content pane cleared");
     }
 
 
     @Override
     public void onThemeChanged(Style newTheme) {
-        styleManager.toggleSceneStyle(rightContentPane.getScene(), this);
+        styleManager.toggleSceneStyle(centerSplitPane.getScene(), this);
     }
 
 }
