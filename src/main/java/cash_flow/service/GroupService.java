@@ -1,7 +1,6 @@
 package cash_flow.service;
 
 import cash_flow.common.ErrorUtilities;
-import cash_flow.common.StatusResponses;
 import cash_flow.domain.Group;
 import cash_flow.domain.Overseer;
 import cash_flow.dto.incoming.GroupCreationCommand;
@@ -13,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,5 +78,19 @@ public class GroupService {
 
         log.info("Group created successfully with ID: {}", group.getId());
         return group.getId();
+    }
+
+    public LocalDate getGroupStartDate(Long groupId) {
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new IllegalArgumentException("not good"));
+
+        LocalDate startDate = group.getGroupCreationDate().toLocalDate();
+        log.info("Retrieved start date for group ID {}: {}", groupId, startDate);
+        return startDate;
+    }
+
+    public Group getGroupFromRepository(Long groupId) {
+        return groupRepository.findById(groupId)
+                .orElseThrow(() -> new IllegalArgumentException("Group with ID " + groupId + " not found"));
     }
 }

@@ -1,7 +1,5 @@
-package cash_flow.controller;
+package cash_flow.controller.utilities;
 
-import cash_flow.controller.utilities.ControllerUtilities;
-import cash_flow.dto.outgoing.GroupSelectionDetails;
 import cash_flow.dto.outgoing.SelectionParentClass;
 import cash_flow.scene.SceneConfiguration;
 import cash_flow.scene.SceneConfigurationLoader;

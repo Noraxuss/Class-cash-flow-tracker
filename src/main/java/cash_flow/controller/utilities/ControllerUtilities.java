@@ -2,6 +2,7 @@ package cash_flow.controller.utilities;
 
 import cash_flow.style_manager.StyleManager;
 import cash_flow.style_manager.ThemeChangeListener;
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
@@ -17,35 +18,44 @@ public class ControllerUtilities {
         this.styleManager = styleManager;
     }
 
+    /**
+     * Initializes the scene style for a given Node and registers a ThemeChangeListener.
+     * This method ensures that the stylesheet is applied when the scene is attached to the Node.
+     *
+     * @param node     The Node to apply the style to.
+     * @param listener The ThemeChangeListener to register for style changes.
+     */
     public void initializeSceneStyle(Node node, ThemeChangeListener listener) {
         styleManager.addListener(listener);
 
-        // We attach a listener to the sceneProperty of the node (the root node of this cell).
-        // This listener triggers when the cell is actually attached to a Scene, which is when we can safely
-        // access the Stage. This avoids premature access (and null pointers) that would happen in initialize().
         node.sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene != null) {
-                // Once the node has a Scene, we can now retrieve the Window (Stage) it's part of
-                Stage stage = (Stage) newScene.getWindow();
-                // Clear existing stylesheets to avoid duplicates
-                node.getScene().getStylesheets().clear();
+                // Apply stylesheet immediately when the scene is attached
+                newScene.getStylesheets().clear();
+                styleManager.toggleSceneStyle(newScene, listener);
 
-                styleManager.toggleSceneStyle(node.getScene(), listener);
-
-                if (stage != null) {
-                    // Register a cleanup hook: if the window is closed, unregister this controller
-                    // from the StyleManager to avoid memory leaks or unnecessary updates
-                    stage.setOnCloseRequest(event -> {
-                        log.info("Stage closed, removing theme listener from StyleManager");
-                        styleManager.removeListener(listener);
-                    });
-                } else {
-                    // This warning shouldn't normally appear — but it's helpful in debugging if something odd happens
-                    log.warn("Stage was null when scene became available — close listener not set.");
-                }
+                // Delay accessing the Stage to give JavaFX time to attach the Window
+                Platform.runLater(() -> {
+                    if (newScene.getWindow() instanceof Stage stage) {
+                        stage.setOnCloseRequest(event -> {
+                            log.info("Stage closed, removing theme listener from StyleManager");
+                            styleManager.removeListener(listener);
+                        });
+                    } else {
+                        log.warn("Stage was still null after Platform.runLater — close listener not set.");
+                    }
+                });
             }
         });
-
     }
+
+    public void closeStage(Node node) {
+        if (node != null && node.getScene() != null && node.getScene().getWindow() instanceof Stage stage) {
+            stage.close();
+        } else {
+            log.warn("Node's scene or window is null, cannot close stage.");
+        }
+    }
+
 
 }

@@ -66,8 +66,7 @@ public class AddGroupOverseerScene implements ThemeChangeListener {
         if(creationStatus.equals(StatusResponses.SUCCESS)) {
             log.info("Overseer created successfully, updating overseer list in ChooseCashCollectionGroupController");
 
-            Stage stage = (Stage) createNewOverseer.getScene().getWindow();
-            stage.close();
+            controllerUtilities.closeStage(createNewOverseer);
         }
     }
 

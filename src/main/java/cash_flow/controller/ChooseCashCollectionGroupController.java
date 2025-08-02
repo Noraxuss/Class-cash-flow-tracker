@@ -2,6 +2,7 @@ package cash_flow.controller;
 
 import cash_flow.context.AppContext;
 import cash_flow.controller.utilities.ControllerUtilities;
+import cash_flow.controller.utilities.ListCellController;
 import cash_flow.dto.outgoing.GroupSelectionDetails;
 import cash_flow.dto.outgoing.OverseerSelectionDetails;
 import cash_flow.dto.outgoing.SelectionParentClass;
@@ -86,16 +87,17 @@ public class ChooseCashCollectionGroupController implements ThemeChangeListener 
         overseerSelectionDetailsObservableList = FXCollections.observableArrayList();
 
         // Load overseers into the ComboBox
-        Platform.runLater(() -> {Stage stage = (Stage) cashCollectionGroupListView.getScene().getWindow();
+        Platform.runLater(() -> {
+            Stage stage = (Stage) cashCollectionGroupListView.getScene().getWindow();
             loadCombobox();
-            stage.focusedProperty().addListener((obs,
-                                                 oldFocus, newFocus) -> {
+            stage.focusedProperty().addListener((obs, oldFocus, newFocus) -> {
                 if (newFocus.equals(true)) {
                     log.info("Stage focused, reloading overseer list and groups.");
                     // Reload overseers and groups when the stage gains focus
                     loadCombobox();
                 }
-            });});
+            });
+        });
 
         setupCombobox();
 
@@ -115,6 +117,19 @@ public class ChooseCashCollectionGroupController implements ThemeChangeListener 
 
         // Attach ListView click handler once
         cashCollectionGroupListView.setOnMouseClicked(this::handleCashCollectionGroupListViewClick);
+
+        Platform.runLater(() -> {
+            Stage stage = (Stage) cashCollectionGroupListView.getScene().getWindow();
+            stage.focusedProperty().addListener((obs, oldFocus, newFocus) -> {
+                if (newFocus.equals(true) && appContext.getGroupContext() != null) {
+                    sceneEngine.loadingNextScene(SceneType.SPLIT_CENTER);
+                    controllerUtilities.closeStage(cashCollectionGroupListView);
+
+                }
+
+            });
+        });
+        log.info("ChooseCashCollectionGroupController initialized");
     }
 
     /**
@@ -158,6 +173,7 @@ public class ChooseCashCollectionGroupController implements ThemeChangeListener 
      * It should be replaced with actual service calls to fetch groups.
      * This method also adds a special "Add New" group item at the top of the list.
      * This item allows users to create a new group directly from the ListView.
+     *
      * @param selectedOverseer the overseer whose groups are to be loaded
      */
     private void loadOverseerGroups(OverseerSelectionDetails selectedOverseer) {
@@ -189,6 +205,7 @@ public class ChooseCashCollectionGroupController implements ThemeChangeListener 
      * It checks if the clicked item is a valid group or the "Add New" item.
      * If a valid group is selected, it sets the group ID in the application context
      * and closes the current stage.
+     *
      * @param event the MouseEvent triggered by the click
      */
     @FXML
@@ -201,14 +218,17 @@ public class ChooseCashCollectionGroupController implements ThemeChangeListener 
             if (selectedItem != null && !"Új csoport".equals(selectedItem.getName())) {
                 // Handle regular group selection
                 log.info("Selected Cash Collection Group: {}", selectedItem);
-                appContext.getGroupContext().setGroupId(selectedItem.getGroupId());
+                Long groupId = selectedItem.getGroupId();
+                appContext.getGroupContext().setGroupId(groupId);
+                appContext.getGroupContext().setStartDate(groupService.getGroupStartDate(groupId));
                 Stage stage = (Stage) cashCollectionGroupListView.getScene().getWindow();
                 stage.close(); // Close the current stage
+                sceneEngine.loadingNextScene(SceneType.SPLIT_CENTER);
 
             } else if (selectedItem != null) {
                 // Handle the "Add New" item
                 log.info("Add New Cash Collection Group clicked");
-                sceneEngine.switchScene(SceneType.CREATE_GROUP);
+                sceneEngine.loadingNextScene(SceneType.CREATE_GROUP);
             }
         }
     }
@@ -216,13 +236,14 @@ public class ChooseCashCollectionGroupController implements ThemeChangeListener 
     /**
      * Handles clicks on the "Add New Overseer" button.
      * Opens a dialog or scene for creating a new overseer.
+     *
      * @param actionEvent the ActionEvent triggered by the button click
      */
     @FXML
     public void handleAddNewOverseerButtonClick(ActionEvent actionEvent) {
         if (actionEvent.getSource() == addNewOverseerButton) {
             log.info("Add New Overseer button clicked, switching to AddGroupOverseer scene");
-            sceneEngine.switchScene(SceneType.ADD_GROUP_OVERSEER);
+            sceneEngine.loadingNextScene(SceneType.ADD_GROUP_OVERSEER);
         }
     }
 

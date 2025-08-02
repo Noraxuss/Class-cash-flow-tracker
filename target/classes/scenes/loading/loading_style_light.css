@@ -1,0 +1,12 @@
+.root {
+    -fx-background-color: #ffffff;
+}
+
+.progress-bar {
+    -fx-accent: #4285f4;
+}
+
+.label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #444;
+}

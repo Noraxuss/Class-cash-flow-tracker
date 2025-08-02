@@ -4,16 +4,21 @@ import cash_flow.application.SpringFXMLLoader;
 import cash_flow.context.AppContext;
 import cash_flow.controller.BaseLayoutController;
 import cash_flow.controller.DeferredSceneInit;
-import cash_flow.style_manager.StyleManager;
+import cash_flow.controller.SplitCenterController;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.SplitPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.util.Duration;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -31,31 +36,34 @@ public class SceneEngine {
     private final SpringFXMLLoader springFXMLLoader;
     private final BaseLayoutController baseLayoutController;
     private final SceneConfigurationLoader sceneConfigurationLoader;
-    private final StyleManager styleManager;
     private final AppContext appContext;
+    private final SplitCenterController splitCenterController;
 
     @Setter
     private Stage mainStage;
 
+    private boolean isFirstSceneLoad = true;
+
+
     /**
      * Constructor for SceneEngine, initializes the dependencies.
      *
-     * @param springFXMLLoader        the loader for FXML files
-     * @param baseLayoutController    the controller for the base layout
+     * @param springFXMLLoader         the loader for FXML files
+     * @param baseLayoutController     the controller for the base layout
      * @param sceneConfigurationLoader the loader for scene configurations
-     * @param styleManager            the manager for styles
-     * @param appContext              the application context
+     * @param appContext               the application context
      */
     @Autowired
     public SceneEngine(SpringFXMLLoader springFXMLLoader,
-                       BaseLayoutController baseLayoutController,
+                       @Lazy BaseLayoutController baseLayoutController,
                        SceneConfigurationLoader sceneConfigurationLoader,
-                       StyleManager styleManager, AppContext appContext) {
+                       AppContext appContext,
+                       @Lazy SplitCenterController splitCenterController) {
         this.springFXMLLoader = springFXMLLoader;
         this.baseLayoutController = baseLayoutController;
         this.sceneConfigurationLoader = sceneConfigurationLoader;
-        this.styleManager = styleManager;
         this.appContext = appContext;
+        this.splitCenterController = splitCenterController;
     }
 
     /**
@@ -63,16 +71,14 @@ public class SceneEngine {
      * This method sets up the initial scene and displays the main stage.
      *
      * @param starterScene the initial scene to display
-     * @param loading      the loading scene to show while initializing
      */
-    public void initializeStage(SceneType starterScene, SceneType loading) {
-        log.info("Initializing stage with starter scene: {}", starterScene);
+    public void initializeStage(SceneType starterScene) {
+        log.info("Initializing loading with scene: {}", "LOADING");
+        switchScene(SceneType.LOADING);
 
+        log.info("Initializing main stage with scene: {}", starterScene);
         switchScene(starterScene);
         mainStage.show();
-        switchScene(loading);
-
-        log.debug("Stage initialized and shown.");
     }
 
     /**
@@ -93,11 +99,40 @@ public class SceneEngine {
                 case "center" -> updateCenterScene(sceneConfiguration);
                 case "extra" -> createExtraScene(sceneConfiguration, sceneType);
                 case "base" -> createBaseLayout(sceneConfiguration);
+//                case "split_center" -> updateSplitCenterPane(sceneConfiguration);
                 default -> throw new IllegalArgumentException("Invalid scene placement: " + scenePlacement);
             }
         } catch (IOException e) {
             log.error("Error switching scene {}: {}", sceneType, e.getMessage());
             throw new RuntimeException(e);
+        }
+        // hide loadingStage since loading is finished
+        log.info("Hiding loading scene after switching to {}", sceneType);
+        hideLoadingScene();
+    }
+
+    /**
+     * Loads the next scene and displays a loading scene while the new scene is being prepared.
+     * This method is useful for transitions between scenes, especially during application startup.
+     *
+     * @param nextScene the type of the next scene to load
+     */
+    public void loadingNextScene(SceneType nextScene) {
+        log.info("Loading next scene: {}", nextScene);
+
+        showLoadingScene();
+
+        // If this is the first scene load, we add a delay to allow the loading scene to be visible
+        // before switching to the next scene. This is useful for transitions.
+        if (isFirstSceneLoad) {
+            this.isFirstSceneLoad = false;
+            PauseTransition pauseTransition = new PauseTransition(Duration.seconds(0.3));
+            pauseTransition.setOnFinished(event -> {
+                switchScene(nextScene);  // This automatically hides the loader
+            });
+            pauseTransition.play();
+        } else  {
+            switchScene(nextScene);
         }
     }
 
@@ -117,6 +152,13 @@ public class SceneEngine {
         mainStage.setResizable(sceneConfiguration.isResizable());
     }
 
+    /**
+     * Updates the center scene of the application.
+     * This method loads the specified scene and sets it as the center content pane.
+     *
+     * @param configuration the scene configuration containing FXML and CSS paths
+     * @throws IOException if the FXML file cannot be loaded
+     */
     private void updateCenterScene(SceneConfiguration configuration) throws IOException {
         baseLayoutController.clearCenterContentPane();
 
@@ -124,8 +166,16 @@ public class SceneEngine {
 
         FXMLLoader loader = loadScene(configuration);
         Parent scene = loader.load();
+
+        // Auto-size scene to fit the container
+        if (scene instanceof SplitPane splitPane) {
+            // Ensure it grows and fills the space in its parent SplitPane
+            SplitPane.setResizableWithParent(splitPane, true);
+        }
+
         baseLayoutController.setCenterContentPanes(scene);
 
+        // Handle Deferred init
         Platform.runLater(() -> {
             Object controller = loader.getController();
             if (controller instanceof DeferredSceneInit deferred) {
@@ -133,6 +183,29 @@ public class SceneEngine {
             }
         });
     }
+
+
+    /**
+     * Updates the split center pane with the specified scene configuration.
+     * This method loads the scene and sets it in the appropriate side of the split center pane.
+     *
+     * @param configuration the scene configuration containing FXML and CSS paths
+     * @throws IOException if the FXML file cannot be loaded
+     */
+//    private void updateSplitCenterPane(SceneConfiguration configuration) throws IOException {
+//        log.info("Updating split center pane with scene: {}", configuration);
+//
+//        FXMLLoader loader = loadScene(configuration);
+//        Parent scene = loader.load();
+//
+//        if (configuration.getSide().equals("left")) {
+//            splitCenterController.setLeftPane(scene);
+//        } else if (configuration.getSide().equals("right")) {
+//            splitCenterController.setRightPane(scene);
+//        } else {
+//            throw new IllegalArgumentException("Invalid side for split center pane: " + configuration.getSide());
+//        }
+//    }
 
     /**
      * Creates an extra scene displayed as a modal dialog.
@@ -143,25 +216,59 @@ public class SceneEngine {
      * @throws IOException if the FXML file cannot be loaded
      */
     private void createExtraScene(SceneConfiguration configuration, SceneType sceneType) throws IOException {
+        log.info("Creating extra layout for scene: {}", configuration);
         FXMLLoader fxmlLoader = loadScene(configuration);
 
+        // Load the FXML file and create the scene
         Parent root = fxmlLoader.load();
-//        root.getStylesheets().add(configuration.getCssLight());
         Scene scene = new Scene(root);
         Stage extraStage = new Stage();
 
         log.info("Creating extra stage for scene: {}", configuration);
         extraStage.setScene(scene);
         extraStage.setResizable(configuration.isResizable());
-//        this.extraStage.setMaxHeight(ScreenBounds.getScreenBounds().getHeight());
-//        this.extraStage.setMaxWidth(ScreenBounds.getScreenBounds().getWidth());
-        extraStage.sizeToScene();
-        extraStage.centerOnScreen();
         extraStage.initOwner(mainStage);
-        extraStage.initModality(Modality.WINDOW_MODAL);
-        extraStage.showAndWait();
+        extraStage.centerOnScreen();
+        extraStage.initModality(Modality.APPLICATION_MODAL);
 
-        appContext.getStageContext().addStage(sceneType, extraStage);// Store the extra stage in the context
+        if (sceneType != SceneType.LOADING) {
+            extraStage.sizeToScene();
+            // This allows interaction with the main stage while the extra stage is open
+            log.info("Showing extra stage for scene: {}", sceneType);
+            extraStage.show();
+        }
+        if (sceneType == SceneType.LOADING) {
+            extraStage.initStyle(StageStyle.UNDECORATED); // 🔥 This removes the title bar
+            extraStage.setAlwaysOnTop(true);
+            appContext.getLoadingSceneContext().setLoadingStage(extraStage);
+            log.info("Loading stage set in AppContext: {}", appContext.getLoadingSceneContext().getLoadingStage());
+            extraStage.show();
+        }
+    }
+
+    /**
+     * Shows the loading scene, typically used during application startup or when switching scenes.
+     * This method displays a loading indicator to inform the user that the application is processing.
+     */
+    public void showLoadingScene() {
+        log.info("Showing loading scene");
+        Stage loadingStage = appContext.getLoadingSceneContext().getLoadingStage();
+
+        loadingStage.show();
+    }
+
+    /**
+     * Hides the loading scene if it is currently displayed.
+     * This method is called when the application is ready to switch to the next scene.
+     */
+    public void hideLoadingScene() {
+        log.info("Hiding loading scene");
+        Stage loadingStage = appContext.getLoadingSceneContext().getLoadingStage();
+        if (loadingStage != null) {
+            loadingStage.hide();
+        } else {
+            log.warn("Loading stage is null, cannot hide loading scene.");
+        }
     }
 
     /**
@@ -201,9 +308,4 @@ public class SceneEngine {
             throw new RuntimeException(e);
         }
     }
-
-    public void closeScene(SceneType scene) {
-
-    }
-
 }

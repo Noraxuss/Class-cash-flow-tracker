@@ -1,6 +1,7 @@
 package cash_flow.service;
 
 import cash_flow.domain.Overseer;
+import cash_flow.domain.Person;
 import cash_flow.dto.outgoing.OverseerSelectionDetails;
 import cash_flow.dto.outgoing.SelectionParentClass;
 import lombok.extern.slf4j.Slf4j;
@@ -12,16 +13,16 @@ import java.time.LocalDate;
 @Slf4j
 public class PersonService {
 
-    public String createPersonId(Overseer overseer, Long idNumber) {
+    public String createPersonId(Person person, Long idNumber) {
         StringBuilder personId = new StringBuilder();
-        if (overseer == null || overseer.getPersonType() == null || overseer.getFirstName() == null || overseer.getLastName() == null) {
-            log.error("Invalid overseer data provided for ID generation.");
+        if (person == null || person.getPersonType() == null || person.getFirstName() == null || person.getLastName() == null) {
+            log.error("Invalid person data provided for ID generation.");
             return null;
         }
-        personId.append(overseer.getPersonType().getTypeName());
+        personId.append(person.getPersonType().getTypeName());
         personId.append("-");
-        personId.append(overseer.getFirstName().charAt(0));
-        personId.append(overseer.getLastName().charAt(0));
+        personId.append(person.getFirstName().charAt(0));
+        personId.append(person.getLastName().charAt(0));
         personId.append("-");
         personId.append(idNumber);
         personId.append("-");

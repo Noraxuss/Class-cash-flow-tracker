@@ -5,6 +5,8 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+
 @Component
 @Slf4j
 @Getter
@@ -12,5 +14,6 @@ import org.springframework.stereotype.Component;
 public class GroupContext {
 
     private Long groupId;
+    private LocalDate startDate;
 
 }

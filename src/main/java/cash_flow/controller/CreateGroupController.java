@@ -93,8 +93,7 @@ public class CreateGroupController implements ThemeChangeListener {
      */
     public void backButtonClicked(MouseEvent mouseEvent) {
         log.info("Back button clicked, returning to the previous scene.");
-        Stage stage = (Stage) back.getScene().getWindow();
-        stage.close();
+        controllerUtilities.closeStage(createGroup);
     }
 
 

@@ -30,7 +30,7 @@ public class Group {
     private LocalDateTime groupCreationDate;
 
     @Column(name = "group_end_date" , nullable = false)
-    private LocalDateTime GroupEndDate;
+    private LocalDateTime groupEndDate;
 
     @ManyToOne
     @JoinColumn(name = "overseer_id", nullable = false)

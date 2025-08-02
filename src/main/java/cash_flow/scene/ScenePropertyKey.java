@@ -20,7 +20,8 @@ public enum ScenePropertyKey {
     SCENE_RESIZABLE("scene.resizable"),
     SCENE_TRANSITION("scene.transition"),
     SCENE_PLACEMENT("scene.placement"),
-    SCENE_MESSAGES("scene.messages");
+    SCENE_MESSAGES("scene.messages"),
+    SCENE_SIDE("scene.side");
 
     private final String propertyName;
 

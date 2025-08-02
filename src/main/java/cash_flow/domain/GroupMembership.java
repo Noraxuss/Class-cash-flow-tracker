@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -20,10 +21,10 @@ public class GroupMembership {
     private Long id;
 
     @Column(nullable = false, name = "membership_start_date")
-    private LocalDateTime membershipStartDate;
+    private LocalDate membershipStartDate;
 
     @Column(name = "membership_end_date")
-    private LocalDateTime membershipEndDate;
+    private LocalDate membershipEndDate;
 
     @ManyToOne
     @JoinColumn(name = "group_id", nullable = false)

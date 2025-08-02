@@ -1,0 +1,67 @@
+/*!* ===== TABLEVIEW BASE STYLES ===== *!*/
+/*.table-view {*/
+/*    -fx-background-color: #ffffff;*/
+/*    -fx-border-color: #cccccc;*/
+/*    -fx-border-radius: 6px;*/
+/*    -fx-background-radius: 6px;*/
+/*    -fx-table-cell-border-color: transparent;*/
+/*    -fx-padding: 4px;*/
+/*    -fx-text-fill: #1e1e1e;*/
+/*    -fx-font-size: 14px;*/
+/*    -fx-font-family: "Segoe UI", sans-serif;*/
+/*}*/
+
+/*!* ===== HEADER STYLING ===== *!*/
+/*.table-view .column-header-background {*/
+/*    -fx-background-color: #e8e8e8;*/
+/*    -fx-border-radius: 6px 6px 0 0;*/
+/*    -fx-background-radius: 6px 6px 0 0;*/
+/*}*/
+
+/*.table-view .column-header {*/
+/*    -fx-font-weight: bold;*/
+/*    -fx-font-size: 13px;*/
+/*    -fx-padding: 8px 4px;*/
+/*    -fx-border-color: transparent transparent #d0d0d0 transparent;*/
+/*}*/
+
+/*!* ===== ROW STYLING ===== *!*/
+/*.table-view .table-row-cell {*/
+/*    -fx-background-color: #ffffff;*/
+/*    -fx-border-color: transparent;*/
+/*    -fx-padding: 4px;*/
+/*}*/
+
+/*.table-view .table-row-cell:filled:hover {*/
+/*    -fx-background-color: #f0f0f0;*/
+/*}*/
+
+/*.table-view .table-row-cell:filled:selected {*/
+/*    -fx-background-color: #dbe4ff;*/
+/*    -fx-text-fill: #1e1e1e;*/
+/*}*/
+
+/*!* ===== CELL STYLING ===== *!*/
+/*.table-view .table-cell {*/
+/*    -fx-padding: 8px;*/
+/*    -fx-border-color: transparent;*/
+/*    -fx-alignment: CENTER_LEFT;*/
+/*}*/
+
+/*!* ===== DATEPICKER INSIDE CELL ===== *!*/
+/*.date-picker {*/
+/*    -fx-background-color: #ffffff;*/
+/*    -fx-border-color: #cccccc;*/
+/*    -fx-background-radius: 6px;*/
+/*    -fx-border-radius: 6px;*/
+/*    -fx-padding: 2px 4px;*/
+/*    -fx-font-size: 13px;*/
+/*}*/
+
+/*!* Editable text fields in table (when editing) *!*/
+/*.text-field.table-cell {*/
+/*    -fx-background-color: #ffffff;*/
+/*    -fx-border-color: #3f51b5;*/
+/*    -fx-border-width: 1px;*/
+/*    -fx-border-radius: 4px;*/
+/*}*/

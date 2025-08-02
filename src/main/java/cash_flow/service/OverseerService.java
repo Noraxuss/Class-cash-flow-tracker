@@ -8,11 +8,9 @@ import cash_flow.dto.outgoing.OverseerSelectionDetails;
 import cash_flow.repository.OverseerRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

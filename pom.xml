@@ -123,6 +123,15 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- TESTFX DEPENDENCIES -->
+        <!-- https://mvnrepository.com/artifact/org.testfx/testfx-junit5 -->
+        <dependency>
+            <groupId>org.testfx</groupId>
+            <artifactId>testfx-junit5</artifactId>
+            <version>4.0.18</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- OTHER DEPENDENCIES -->
         <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
         <dependency>

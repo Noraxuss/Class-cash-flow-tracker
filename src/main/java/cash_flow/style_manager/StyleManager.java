@@ -108,7 +108,20 @@ public class StyleManager {
                 meta.getCssPath(currentTheme));
 
         scene.getStylesheets().clear();
-        scene.getStylesheets().add(currentTheme.getStylePath());
-        scene.getStylesheets().add(meta.getCssPath(currentTheme));
+        try {
+            String baseCssUrl = getClass().getResource(currentTheme.getStylePath()).toExternalForm();
+            scene.getStylesheets().add(baseCssUrl);
+            log.debug("Base stylesheet applied: {}", baseCssUrl);
+        } catch (Exception e) {
+            log.error("Failed to load base stylesheet: {}", currentTheme.getStylePath(), e);
+        }
+
+        try {
+            String sceneCssUrl = getClass().getResource(meta.getCssPath(currentTheme)).toExternalForm();
+            scene.getStylesheets().add(sceneCssUrl);
+            log.debug("Scene-specific stylesheet applied: {}", sceneCssUrl);
+        } catch (Exception e) {
+            log.error("Failed to load scene-specific stylesheet: {}", meta.getCssPath(currentTheme), e);
+        }
     }
 }

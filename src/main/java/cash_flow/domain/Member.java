@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "group_members")
-public class Member extends Person{
+public class Member extends Person {
 
     @ManyToOne
     @JoinColumn(name = "overseer_id", nullable = false)

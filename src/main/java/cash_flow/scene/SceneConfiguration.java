@@ -25,6 +25,7 @@ public class SceneConfiguration {
     private String transition;
     private String placement;
     private String messages;
+    private  String side;
 
     public void fillSceneConfig(Properties props) {
         log.info("Filling scene config");
@@ -41,6 +42,7 @@ public class SceneConfiguration {
         this.transition = props.getProperty(ScenePropertyKey.SCENE_TRANSITION.getPropertyName());
         this.placement = props.getProperty(ScenePropertyKey.SCENE_PLACEMENT.getPropertyName());
         this.messages = props.getProperty(ScenePropertyKey.SCENE_MESSAGES.getPropertyName());
+        this.side = props.getProperty(ScenePropertyKey.SCENE_SIDE.getPropertyName());
     }
 
     @Override
@@ -58,6 +60,7 @@ public class SceneConfiguration {
                 ", transition='" + transition + '\'' +
                 ", placement='" + placement + '\'' +
                 ", messages='" + messages + '\'' +
+                ", side='" + side + '\'' +
                 '}';
     }
 }

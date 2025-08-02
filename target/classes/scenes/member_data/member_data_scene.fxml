@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.TabPane?>
+<TabPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+         fx:controller="cash_flow.controller.MemberDataController"
+         fx:id="memberDataTabPane">
+</TabPane>
 
-<VBox xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="cash_flow.controller.MemberDataController"
-      spacing="10">
-</VBox>
+
+
+
+

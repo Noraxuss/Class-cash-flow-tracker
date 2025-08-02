@@ -3,11 +3,11 @@ package cash_flow.config;
 import cash_flow.domain.Group;
 import cash_flow.domain.Overseer;
 import cash_flow.dto.incoming.GroupCreationCommand;
+import cash_flow.dto.outgoing.GroupSelectionDetails;
 import cash_flow.dto.outgoing.OverseerSelectionDetails;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
-import org.modelmapper.spi.MappingContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -39,6 +39,14 @@ public class ModelMapperConfig {
                     mapper.using(stringToLocalDateTime())
                             .map(GroupCreationCommand::getEndDateString, Group::setGroupEndDate);
                 });
+
+        modelMapper.typeMap(Group.class, GroupSelectionDetails.class)
+                .addMappings(mapper ->
+                        mapper.map(Group::getId, GroupSelectionDetails::setGroupId));
+
+//        modelMapper.typeMap(GroupMemberCreationCommand.class, Member.class)
+//                .addMappings(mapper ->
+//                        mapper.skip()
 
         return modelMapper;
     }

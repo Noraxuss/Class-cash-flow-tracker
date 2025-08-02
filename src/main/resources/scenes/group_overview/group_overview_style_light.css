@@ -1,0 +1,9 @@
+.tab {
+    -fx-pref-width: 40px; /* default width (inactive tabs) */
+}
+
+.tab:selected {
+    -fx-pref-width: 120px; /* wider for the selected tab */
+}
+
+
