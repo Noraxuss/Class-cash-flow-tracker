@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="cash_flow.controller.AddPaymentController"
+      spacing="10">
+
+
+
+    <VBox>
+        <TableView fx:id="makePayment">
+            <columns>
+                <TableColumn fx:id="paymentMaker" prefWidth="100.0">
+                    <graphic>
+                        <Label text="%payment_maker_name">
+                            <tooltip>
+                                <Tooltip text="%payment_maker_name"/>
+                            </tooltip>
+                        </Label>
+                    </graphic>
+                </TableColumn>
+
+                <TableColumn fx:id="paymentDate" prefWidth="100.0">
+                    <graphic>
+                        <Label text="%payment_date">
+                            <tooltip>
+                                <Tooltip text="%payment_date"/>
+                            </tooltip>
+                        </Label>
+                    </graphic>
+                </TableColumn>
+
+                <TableColumn fx:id="paymentGoal" prefWidth="150.0" >
+                    <graphic>
+                        <Label text="%payment_reason">
+                            <tooltip>
+                                <Tooltip text="%payment_reason"/>
+                            </tooltip>
+                        </Label>
+                    </graphic>
+                </TableColumn>
+
+                <TableColumn fx:id="paymentAmount" prefWidth="100.0">
+                    <graphic>
+                        <Label text="%payment_amount">
+                            <tooltip>
+                                <Tooltip text="%payment_amount"/>
+                            </tooltip>
+                        </Label>
+                    </graphic>
+                </TableColumn>
+
+                <TableColumn fx:id="currency" prefWidth="100.0">
+                    <graphic>
+                        <Label text="%payment_currency">
+                            <tooltip>
+                                <Tooltip text="%payment_currency"/>
+                            </tooltip>
+                        </Label>
+                    </graphic>
+                </TableColumn>
+            </columns>
+        </TableView>
+        <HBox fx:id="buttonsHBox" alignment="CENTER" spacing="10.0">
+            <Button fx:id="saveChangesButton" mnemonicParsing="false"
+                    text="%save_changes_button" onAction="#saveChangesClicked">
+            </Button>
+            <Button fx:id="backButton" mnemonicParsing="false"
+                    text="%back_button" onAction="#backButtonClicked"/>
+        </HBox>
+    </VBox>
+
+</VBox>

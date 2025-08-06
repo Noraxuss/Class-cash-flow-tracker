@@ -10,81 +10,65 @@
     <VBox>
         <TableView fx:id="membersTableView">
             <columns>
-                <TableColumn fx:id="firstNameColumn" prefWidth="100.0" text="">
+                <TableColumn fx:id="firstNameColumn" id="memberFirstName" text="">
                     <graphic>
                         <Label text="%first_name_column">
-                            <tooltip>
-                                <Tooltip text="%first_name_column"/>
-                            </tooltip>
+                            <tooltip><Tooltip text="%first_name_column"/></tooltip>
                         </Label>
                     </graphic>
                 </TableColumn>
 
-                <TableColumn fx:id="lastNameColumn" prefWidth="100.0" text="">
+                <TableColumn fx:id="lastNameColumn" id="memberLastName" text="">
                     <graphic>
                         <Label text="%last_name_column">
-                            <tooltip>
-                                <Tooltip text="%last_name_column"/>
-                            </tooltip>
+                            <tooltip><Tooltip text="%last_name_column"/></tooltip>
                         </Label>
                     </graphic>
                 </TableColumn>
 
-                <TableColumn fx:id="emailColumn" prefWidth="150.0" text="">
+                <TableColumn fx:id="emailColumn" id="memberEmail" text="">
                     <graphic>
                         <Label text="%e-mail_column">
-                            <tooltip>
-                                <Tooltip text="%e-mail_column"/>
-                            </tooltip>
+                            <tooltip><Tooltip text="%e-mail_column"/></tooltip>
                         </Label>
                     </graphic>
                 </TableColumn>
 
-                <TableColumn fx:id="joinDateColumn" prefWidth="100.0" text="">
+                <TableColumn fx:id="joinDateColumn" id="memberJoinDate" text="">
                     <graphic>
                         <Label text="%join_date_column">
-                            <tooltip>
-                                <Tooltip text="%join_date_column"/>
-                            </tooltip>
+                            <tooltip><Tooltip text="%join_date_column"/></tooltip>
                         </Label>
                     </graphic>
                 </TableColumn>
 
-                <TableColumn fx:id="optionalColumn" text="">
+                <TableColumn fx:id="optionalColumn" id="optional" text="">
                     <graphic>
                         <Label text="%optional_column">
-                            <tooltip>
-                                <Tooltip text="%optional_column"/>
-                            </tooltip>
+                            <tooltip><Tooltip text="%optional_column"/></tooltip>
                         </Label>
                     </graphic>
                     <columns>
-                        <TableColumn fx:id="guardianFirstNameColumn" prefWidth="100.0" text="">
+                        <TableColumn fx:id="guardianFirstNameColumn" id="guardianFirstName" text="">
                             <graphic>
                                 <Label text="%parent_first_name">
-                                    <tooltip>
-                                        <Tooltip text="%parent_first_name"/>
-                                    </tooltip>
+                                    <tooltip><Tooltip text="%parent_first_name"/></tooltip>
                                 </Label>
                             </graphic>
                         </TableColumn>
 
-                        <TableColumn fx:id="guardianLastNameColumn" prefWidth="100.0" text="">
+                        <TableColumn fx:id="guardianLastNameColumn" id="guardianLastName" text="">
                             <graphic>
                                 <Label text="%parent_last_name">
-                                    <tooltip>
-                                        <Tooltip text="%parent_last_name"/>
-                                    </tooltip>
+                                    <tooltip><Tooltip text="%parent_last_name"/></tooltip>
                                 </Label>
                             </graphic>
                         </TableColumn>
 
-                        <TableColumn fx:id="guardianEmailColumn" prefWidth="150.0" text="">
+                        <TableColumn fx:id="guardianEmailColumn" id="guardianEmail" text="">
                             <graphic>
                                 <Label text="%parent_e-mail_column">
-                                    <tooltip>
-                                        <Tooltip text="%parent_e-mail_column"/>
-                                    </tooltip>
+                                    <tooltip><Tooltip text="%parent_e-mail_column"/></tooltip>
                                 </Label>
                             </graphic>
                         </TableColumn>
@@ -92,6 +76,7 @@
                 </TableColumn>
             </columns>
         </TableView>
+
         <HBox fx:id="buttonsHBox" alignment="CENTER" spacing="10.0">
             <Button fx:id="saveChangesButton" mnemonicParsing="false"
                     text="%save_changes_button" onAction="#saveChangesClicked">
