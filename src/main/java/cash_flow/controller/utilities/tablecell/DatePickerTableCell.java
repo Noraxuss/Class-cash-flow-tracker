@@ -18,7 +18,8 @@ public class DatePickerTableCell<S> extends TableCell<S, LocalDate> {
     private final DateTimeFormatter formatter;                         // Formatter for displaying date
     private final InUIValidationService inUIValidationService;        // (Optional) Date validation logic
 
-    public DatePickerTableCell(DateTimeFormatter formatter, InUIValidationService inUIValidationService) {
+    public DatePickerTableCell(DateTimeFormatter formatter,
+                               InUIValidationService inUIValidationService) {
         this.formatter = formatter;
         this.inUIValidationService = inUIValidationService;
 
