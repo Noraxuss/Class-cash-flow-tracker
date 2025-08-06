@@ -5,10 +5,13 @@ import cash_flow.scene.SceneConfigurationLoader;
 import cash_flow.scene.SceneEngine;
 import cash_flow.scene.SceneType;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
+import javafx.scene.layout.Region;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -40,13 +43,22 @@ public class TabManager {
         }
 
         tab.setClosable(false);
-        if (sceneType==SceneType.GROUP_MEMBER_DATA) {
-            Label groupMemberLabel = new Label("Member");
-            tab.setGraphic(groupMemberLabel);
+        if (sceneType == SceneType.GROUP_MEMBER_DATA) {
+//            Label groupMemberLabel = new Label("Member");
+//            groupMemberLabel.setPadding(Insets.EMPTY);            // Remove padding
+//            groupMemberLabel.setAlignment(Pos.CENTER);             // Center text inside label
+//            groupMemberLabel.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE); // Allow to grow if needed
+//            tab.setGraphic(groupMemberLabel);
+            tab.setText("Member");
+
         } else {
             Label groupLabel = new Label("Overview");
+            groupLabel.setPadding(Insets.EMPTY);
+            groupLabel.setAlignment(Pos.CENTER);
+            groupLabel.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
             tab.setGraphic(groupLabel);
         }
+
 
         return tab;
     }

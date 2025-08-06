@@ -1,5 +1,6 @@
 package cash_flow.controller;
 
+import cash_flow.context.AppContext;
 import cash_flow.controller.utilities.ControllerUtilities;
 import cash_flow.controller.utilities.TabManager;
 import cash_flow.scene.SceneEngine;
@@ -7,21 +8,20 @@ import cash_flow.scene.SceneType;
 import cash_flow.style_manager.Style;
 import cash_flow.style_manager.StyleManager;
 import cash_flow.style_manager.ThemeChangeListener;
-import javafx.animation.Interpolator;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
+import javafx.animation.*;
+import javafx.application.Platform;
+import javafx.beans.property.DoubleProperty;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+
 
 @Component
 @Slf4j
@@ -31,155 +31,138 @@ public class SplitCenterController implements ThemeChangeListener {
     private final ControllerUtilities controllerUtilities;
     private final SceneEngine sceneEngine;
     private final TabManager tabManager;
+    private final AppContext appContext;
 
-    @FXML
-    public TabPane membersTabPane;
-    @FXML
-    public Tab addMemberTab;
-    @FXML
-    public TabPane groupTabPane;
-    @FXML
-    public Label addMember;
-    @FXML
-    public SplitPane splitPane;
-    @FXML
-    private VBox leftPane;
-    @FXML
-    private VBox rightPane;
+    @FXML private SplitPane splitPane;
+    @FXML private TabPane groupTabPane, membersTabPane;
+    @FXML private Tab addMemberTab;
+    @FXML private Label addMember;
 
-    // Constants for divider positions
     private static final double LEFT_ACTIVE_POSITION = 0.1;
     private static final double RIGHT_ACTIVE_POSITION = 0.9;
 
     public SplitCenterController(StyleManager styleManager,
                                  ControllerUtilities controllerUtilities,
                                  SceneEngine sceneEngine,
-                                 TabManager tabManager) {
+                                 TabManager tabManager,
+                                 AppContext appContext) {
         this.styleManager = styleManager;
         this.controllerUtilities = controllerUtilities;
         this.sceneEngine = sceneEngine;
         this.tabManager = tabManager;
+        this.appContext = appContext;
     }
 
     @FXML
     public void initialize() {
-        log.info("SplitCenterController initialize");
+        log.info("SplitCenterController initialized");
+
         controllerUtilities.initializeSceneStyle(addMember, this);
 
-        // Initialize tabs
         groupTabPane.getTabs().add(tabManager.createTab(SceneType.GROUP_OVERVIEW));
         membersTabPane.getTabs().add(tabManager.createTab(SceneType.GROUP_MEMBER_DATA));
 
-        // --- Mouse click listener (fires for any mouse click on the TabPane, anywhere) ---
-        groupTabPane.setOnMouseClicked(event -> {
-            Tab selectedTab = groupTabPane.getSelectionModel().getSelectedItem();
-            if (selectedTab != null) {
-                log.info("Left tab selected -> moving divider right");
+        groupTabPane.setOnMouseClicked(e -> {
+            if (groupTabPane.getSelectionModel().getSelectedItem() != null) {
                 setActiveTabPane(groupTabPane, membersTabPane);
-                animateDivider(RIGHT_ACTIVE_POSITION); // Show left side larger
+                animateDividerPosition(RIGHT_ACTIVE_POSITION);
             }
         });
 
-        membersTabPane.setOnMouseClicked(event -> {
-            Tab selectedTab = membersTabPane.getSelectionModel().getSelectedItem();
-            if (selectedTab != null && selectedTab != addMemberTab) {
-                log.info("Right tab selected -> moving divider left");
+        membersTabPane.setOnMouseClicked(e -> {
+            Tab selected = membersTabPane.getSelectionModel().getSelectedItem();
+            if (selected == addMemberTab) {
+                createNewMemberTab();
+            } else if (selected != null) {
                 setActiveTabPane(membersTabPane, groupTabPane);
-                animateDivider(LEFT_ACTIVE_POSITION); // Show right side larger
-            }
-            if (selectedTab == addMemberTab) {
-                createAddMemberTab();
+                animateDividerPosition(LEFT_ACTIVE_POSITION);
             }
         });
 
-        membersTabPane.widthProperty().addListener((obs, oldWidth, newWidth) -> {
-            for (Tab tab : membersTabPane.getTabs()) {
-                Node graphic = tab.getGraphic();
-                if (graphic instanceof Region region) {
-                    region.setPrefWidth(newWidth.doubleValue() * 0.15); // 15% of tabPane width
+        groupTabPane.getSelectionModel().selectFirst();
+        setActiveTabPane(groupTabPane, membersTabPane);
+        animateDividerPosition(RIGHT_ACTIVE_POSITION);
+        Platform.runLater(() -> {widenTabsHorizontally(groupTabPane, 120);
+            widenTabsHorizontally(membersTabPane, 120);});
+
+        // Add listener to dynamically resize on tabs changes
+        groupTabPane.getTabs().addListener((ListChangeListener<Tab>) change -> {
+            while (change.next()) {
+                if (change.wasAdded() || change.wasRemoved()) {
+                    widenTabsHorizontally(groupTabPane, 120);
                 }
             }
         });
 
-        for (Tab tab : membersTabPane.getTabs()) {
-            setupHoverEffectForTab(tab);
-        }
-        for (Tab tab : groupTabPane.getTabs()) {
-            setupHoverEffectForTab(tab);
-        }
-        groupTabPane.getSelectionModel().select(0);
+        membersTabPane.getTabs().addListener((ListChangeListener<Tab>) change -> {
+            while (change.next()) {
+                if (change.wasAdded() || change.wasRemoved()) {
+                    widenTabsHorizontally(membersTabPane, 120);
+                }
+            }
+        });
+
+
+    }
+
+    private void createNewMemberTab() {
+        Tab newTab = tabManager.createTab(SceneType.GROUP_MEMBER_DATA);
+        newTab.setGraphic(new Label("New Member"));
+        membersTabPane.getTabs().add(membersTabPane.getTabs().size() - 1, newTab);
+        membersTabPane.getSelectionModel().select(newTab);
         setActiveTabPane(groupTabPane, membersTabPane);
-        animateDivider(RIGHT_ACTIVE_POSITION); // Show left side larger
+        animateDividerPosition(RIGHT_ACTIVE_POSITION);
     }
 
-    /**
-     * Create the "+" tab logic (never focusable, adds new member tabs).
-     */
-    private void createAddMemberTab() {
-        log.info("create AddMemberTab");
-
-        // Create a new member tab before the "+"
-        Tab newMemberTab = tabManager.createTab(SceneType.GROUP_MEMBER_DATA);
-        Label newMemberLabel = new Label("New Member");
-        newMemberTab.setGraphic(newMemberLabel);
-        setupHoverEffectForTab(newMemberTab); // <--- Add hover behavior
-        membersTabPane.getTabs().add(membersTabPane.getTabs().size() - 1, newMemberTab);
-
-        // Select the new tab
-        membersTabPane.getSelectionModel().select(newMemberTab);
-        setActiveTabPane(groupTabPane, membersTabPane);
-        animateDivider(RIGHT_ACTIVE_POSITION); // Show left side larger
+    private void animateDividerPosition(double target) {
+        DoubleProperty pos = splitPane.getDividers().getFirst().positionProperty();
+        Timeline tl = new Timeline(
+                new KeyFrame(
+                        Duration.millis(300),
+                        new KeyValue(
+                                pos,
+                                target,
+                                Interpolator.EASE_BOTH)));
+        tl.play();
     }
 
-    /**
-     * Animate the SplitPane divider.
-     */
-    private void animateDivider(double targetPosition) {
-        Timeline timeline = new Timeline();
-        KeyValue kv = new KeyValue(
-                splitPane.getDividers().getFirst().positionProperty(),
-                targetPosition,
-                Interpolator.EASE_BOTH
-        );
-        KeyFrame kf = new KeyFrame(Duration.millis(300), kv);
-        timeline.getKeyFrames().setAll(kf);
-        timeline.play();
-    }
+    private void widenTabsHorizontally(TabPane tabPane, double width) {
+        // Force CSS and layout so headers exist
+        tabPane.applyCss();
+        tabPane.layout();
 
-    private void setupHoverEffectForTab(Tab tab) {
-//        if (tab.getGraphic() != null) {
-//            Node headerNode = tab.getGraphic();
-//
-//            // Default width
-//            headerNode.prefWidth(60);
-//
-//            // Hover animation
-//            headerNode.hoverProperty().addListener((obs, wasHovered, isNowHovered) -> {
-//                if (isNowHovered) {
-//                    animateWidth(headerNode, 120);
-//                } else {
-//                    animateWidth(headerNode, 60);
-//                }
-//            });
-//        }
-    }
-
-    private void animateWidth(Node node, double targetWidth) {
-        if (node instanceof Region region) {
-            Timeline timeline = new Timeline();
-            KeyValue kv = new KeyValue(
-                    region.prefWidthProperty(),
-                    targetWidth,
-                    Interpolator.EASE_BOTH);
-            KeyFrame kf = new KeyFrame(Duration.millis(200), kv);
-            timeline.getKeyFrames().add(kf);
-            timeline.play();
+        var tabHeaderArea = tabPane.lookup(".tab-header-area");
+        if (!(tabHeaderArea instanceof Region headerRegion)) {
+            log.warn("No .tab-header-area found or not a Region for {}", tabPane);
+            return;
         }
+
+        // Set width on tab header area itself
+        headerRegion.setMaxHeight(width);
+        headerRegion.setPrefHeight(width);
+        headerRegion.setMinHeight(width);
+
+        var tabHeaders = headerRegion.lookupAll(".tab");
+        for (var node : tabHeaders) {
+            if (node instanceof Region tabHeader) {
+                tabHeader.setMinHeight(width);
+                tabHeader.setPrefHeight(width);
+                tabHeader.setMaxHeight(width);
+                tabHeader.setMinWidth(60);
+                tabHeader.setPrefWidth(60);
+                tabHeader.setMaxWidth(60);
+
+                // Optionally set padding or margin on tab header if needed
+                tabHeader.setPadding(new Insets(0, 10, 0, 10)); // horizontal padding
+            }
+        }
+
+        // Force layout pass to apply changes
+        tabPane.requestLayout();
+        tabPane.layout();
     }
 
-    /**
-     * Update tab width classes depending on active side.
-     */
+
     private void setActiveTabPane(TabPane active, TabPane inactive) {
         active.getStyleClass().add("active");
         inactive.getStyleClass().remove("active");
@@ -187,6 +170,6 @@ public class SplitCenterController implements ThemeChangeListener {
 
     @Override
     public void onThemeChanged(Style newTheme) {
-        styleManager.toggleSceneStyle(leftPane.getScene(), this);
+        styleManager.toggleSceneStyle(groupTabPane.getScene(), this);
     }
 }
