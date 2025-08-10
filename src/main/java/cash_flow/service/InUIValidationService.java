@@ -18,23 +18,6 @@ public class InUIValidationService {
         this.validationErrors = new HashMap<>();
     }
 
-    public boolean validateMemberCreation(GroupMemberCreationCommand command) {
-        boolean result = false;
-//        if (validateName(command.getFirstName())) {
-//            result = true;
-//            return result;
-//        }
-//        if (validateName(command.getLastName())) {
-//            result = true;
-//            return result;
-//        }
-//        if (validateEmail(command.getEmail())) {
-//            result = true;
-//            return result;
-//        }
-        return result;
-    }
-
     public void addValidationError(String key, String errorMessage) {
         if (key == null || errorMessage == null) {
             log.error("Key or error message cannot be null");

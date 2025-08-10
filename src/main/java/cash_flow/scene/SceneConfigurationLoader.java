@@ -22,15 +22,26 @@ public class SceneConfigurationLoader {
             log.error("SceneType is null, cannot load scene properties for null type");
             throw new IllegalArgumentException("SceneType must not be null");
         }
+
         Properties props = new Properties();
-        try (InputStream input = getClass().getResourceAsStream(type.getPropertiesFilePath())) {
+        String path = type.getPropertiesFilePath();
+
+        try (InputStream input = getClass().getResourceAsStream(path)) {
+            log.info("Loading scene properties from file {}", path);
+
+            if (input == null) {
+                log.error("Could not find properties file at path: {}", path);
+                throw new IllegalStateException("Properties file not found: " + path);
+            }
+
             props.load(input);
             sceneConfiguration.fillSceneConfig(props);
             return sceneConfiguration;
+
         } catch (IOException e) {
-            // Log the error or handle it as needed
-            log.error("Error loading scene properties for type: {}", type);
+            log.error("Error loading scene properties for type: {}", type, e);
             throw new RuntimeException("Failed to load scene properties", e);
         }
     }
+
 }

@@ -252,7 +252,6 @@ public class TableManager {
         return newRow;
     }
 
-
     /**
      * Moves the editing focus to the next editable cell, adding new row if necessary.
      */
@@ -268,9 +267,15 @@ public class TableManager {
         int currentRow = pos.getRow();
         int currentCol = pos.getColumn();
 
-        List<TableColumn<S, ?>> columns = new ArrayList<>(tableView.getColumns());
-        columns.removeIf(col -> col.equals(excludeColumn));
-        columns.addAll(excludeColumn.getColumns());
+        log.debug("Current focus: row={}, col={}, column={}", currentRow, currentCol,
+                pos.getTableColumn() != null ? pos.getTableColumn().getText() : "null");
+
+        // Use visible leaf columns to avoid child-column issues
+        List<TableColumn<S, ?>> columns = new ArrayList<>(tableView.getVisibleLeafColumns());
+
+        log.debug("Visible columns: {}", columns.stream()
+                .map(col -> col.getText() + " (editable=" + col.isEditable() + ")")
+                .toList());
 
         int nextCol = currentCol + 1;
         int nextRow = currentRow;
@@ -281,18 +286,33 @@ public class TableManager {
         }
 
         if (nextRow >= backingList.size()) {
+            log.debug("Adding new row at index {}", backingList.size());
             backingList.add(newRowSupplier.get());
         }
 
         final int targetRow = nextRow;
         final int targetCol = nextCol;
 
+        TableColumn<S, ?> targetColumn = columns.get(targetCol);
+
+        log.debug("Attempting to move to row={}, col={}, column={}", targetRow, targetCol,
+                targetColumn.getText());
+
         Platform.runLater(() -> {
+            tableView.requestFocus();
+
             tableView.scrollTo(targetRow);
-            tableView.scrollToColumn(columns.get(targetCol));
-            tableView.getSelectionModel().clearAndSelect(targetRow, columns.get(targetCol));
-            tableView.getFocusModel().focus(targetRow, columns.get(targetCol));
-            tableView.edit(targetRow, columns.get(targetCol));
+            tableView.scrollToColumn(targetColumn);
+            tableView.getSelectionModel().clearAndSelect(targetRow, targetColumn);
+            tableView.getFocusModel().focus(targetRow, targetColumn);
+
+            if (!targetColumn.isEditable()) {
+                log.warn("Target column '{}' is not editable!", targetColumn.getText());
+            }
+
+            log.debug("Calling edit on row={}, column={}", targetRow, targetColumn.getText());
+            tableView.edit(targetRow, targetColumn);
         });
     }
+
 }

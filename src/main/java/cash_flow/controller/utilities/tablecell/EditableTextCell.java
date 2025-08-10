@@ -1,6 +1,5 @@
 package cash_flow.controller.utilities.tablecell;
 
-import cash_flow.dto.GroupMemberRowModel;
 import cash_flow.dto.GroupMemberRowModelEnum;
 import cash_flow.dto.PropertyName;
 import cash_flow.service.InUIValidationService;
@@ -26,15 +25,16 @@ public class EditableTextCell<S, T> extends TableCell<S, T> {
         this.inUIValidationService = inUIValidationService;
         this.userData = userData;
 
-        textField.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.TAB) {
-                commitEdit(converter.fromString(textField.getText()));
-                event.consume();
-            } else if (event.getCode() == KeyCode.ESCAPE) {
-                cancelEdit();
-                event.consume();
-            }
-        });
+//        textField.setOnKeyPressed(event -> {
+//            log.info("Key pressed in EditableTextCell: {}", event.getCode());
+//            if (event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.TAB) {
+//                commitEdit(converter.fromString(textField.getText()));
+//                event.consume();
+//            } else if (event.getCode() == KeyCode.ESCAPE) {
+//                cancelEdit();
+//                event.consume();
+//            }
+//        });
 
         textField.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
             if (!isNowFocused && isEditing()) {
@@ -98,15 +98,14 @@ public class EditableTextCell<S, T> extends TableCell<S, T> {
 
             String validationError = null;
 
+            String propName = userData.getPropertyName();
 
-
-            switch (userData.getPropertyName()) {
-                case GroupMemberRowModelEnum.MEMBER_FIRST_NAME, "lastNameColumn", "guardianFirstNameColumn", "guardianLastNameColumn" ->
-                        validationError = inUIValidationService.validateName(strVal).orElse(null);
-
-                case "emailColumn", "guardianEmailColumn" ->
-                        validationError = inUIValidationService.validateEmail(strVal).orElse(null);
+            if (propName.contains("Name")) {
+                validationError = inUIValidationService.validateName(strVal).orElse(null);
+            } else if (propName.contains("Email")) {
+                validationError = inUIValidationService.validateEmail(strVal).orElse(null);
             }
+
 
             if (validationError != null) {
                 inUIValidationService.addValidationError(key, validationError);

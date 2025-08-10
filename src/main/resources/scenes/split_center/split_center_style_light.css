@@ -1,3 +1,23 @@
-.tab-pane .tab-header-area {
-    -fx-rotate: 0;
+/*Light theme for split center layout*/
+.split-pane-divider {
+    -fx-padding: 0;               /* no fat grip */
+    -fx-background-color: rgba(0,0,0,0.08); /* faint line */
+}
+
+.split-pane-divider > .split-pane-divider {
+    -fx-background-insets: 0;
+}
+
+/* Darker side tab areas */
+.left-group-tabs {
+    -fx-background-color: derive(#9e9d9d, 80%); /* 20% lighter/darker than base */
+}
+
+.right-group-tabs {
+    -fx-background-color: derive(#9e9d9d, 80%);
+}
+
+/* Optional: content panes can stay light or follow theme */
+.content-pane {
+    -fx-background-color: #f8f8f8;
 }

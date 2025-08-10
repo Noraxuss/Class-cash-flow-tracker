@@ -4,23 +4,17 @@ import cash_flow.context.AppContext;
 import cash_flow.controller.utilities.ControllerUtilities;
 import cash_flow.controller.utilities.TabManager;
 import cash_flow.scene.SceneEngine;
-import cash_flow.scene.SceneType;
 import cash_flow.style_manager.Style;
 import cash_flow.style_manager.StyleManager;
 import cash_flow.style_manager.ThemeChangeListener;
 import javafx.animation.*;
-import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
-import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
 
 
 @Component
@@ -34,12 +28,16 @@ public class SplitCenterController implements ThemeChangeListener {
     private final AppContext appContext;
 
     @FXML private SplitPane splitPane;
-    @FXML private TabPane groupTabPane, membersTabPane;
-    @FXML private Tab addMemberTab;
-    @FXML private Label addMember;
 
-    private static final double LEFT_ACTIVE_POSITION = 0.1;
-    private static final double RIGHT_ACTIVE_POSITION = 0.9;
+    @FXML public VBox leftGroupTabs;
+    @FXML public VBox leftGroupContent;
+    @FXML public VBox rightMemberContent;
+    @FXML public VBox rightMemberTabs;
+
+    // Dividers
+    private SplitPane.Divider leftDivider;
+    private SplitPane.Divider centerDivider;
+    private SplitPane.Divider rightDivider;
 
     public SplitCenterController(StyleManager styleManager,
                                  ControllerUtilities controllerUtilities,
@@ -56,112 +54,43 @@ public class SplitCenterController implements ThemeChangeListener {
     @FXML
     public void initialize() {
         log.info("SplitCenterController initialized");
+        controllerUtilities.initializeSceneStyle(splitPane, this);
 
-        controllerUtilities.initializeSceneStyle(addMember, this);
-
-        groupTabPane.getTabs().add(tabManager.createTab(SceneType.GROUP_OVERVIEW));
-        membersTabPane.getTabs().add(tabManager.createTab(SceneType.GROUP_MEMBER_DATA));
-
-        groupTabPane.setOnMouseClicked(e -> {
-            if (groupTabPane.getSelectionModel().getSelectedItem() != null) {
-                setActiveTabPane(groupTabPane, membersTabPane);
-                animateDividerPosition(RIGHT_ACTIVE_POSITION);
-            }
-        });
-
-        membersTabPane.setOnMouseClicked(e -> {
-            Tab selected = membersTabPane.getSelectionModel().getSelectedItem();
-            if (selected == addMemberTab) {
-                createNewMemberTab();
-            } else if (selected != null) {
-                setActiveTabPane(membersTabPane, groupTabPane);
-                animateDividerPosition(LEFT_ACTIVE_POSITION);
-            }
-        });
-
-        groupTabPane.getSelectionModel().selectFirst();
-        setActiveTabPane(groupTabPane, membersTabPane);
-        animateDividerPosition(RIGHT_ACTIVE_POSITION);
-        Platform.runLater(() -> {widenTabsHorizontally(groupTabPane, 120);
-            widenTabsHorizontally(membersTabPane, 120);});
-
-        // Add listener to dynamically resize on tabs changes
-        groupTabPane.getTabs().addListener((ListChangeListener<Tab>) change -> {
-            while (change.next()) {
-                if (change.wasAdded() || change.wasRemoved()) {
-                    widenTabsHorizontally(groupTabPane, 120);
-                }
-            }
-        });
-
-        membersTabPane.getTabs().addListener((ListChangeListener<Tab>) change -> {
-            while (change.next()) {
-                if (change.wasAdded() || change.wasRemoved()) {
-                    widenTabsHorizontally(membersTabPane, 120);
-                }
-            }
-        });
-
-
+        setDividers();
+        leftFocus();
     }
 
-    private void createNewMemberTab() {
-        Tab newTab = tabManager.createTab(SceneType.GROUP_MEMBER_DATA);
-        newTab.setGraphic(new Label("New Member"));
-        membersTabPane.getTabs().add(membersTabPane.getTabs().size() - 1, newTab);
-        membersTabPane.getSelectionModel().select(newTab);
-        setActiveTabPane(groupTabPane, membersTabPane);
-        animateDividerPosition(RIGHT_ACTIVE_POSITION);
+    private void setDividers() {
+        leftDivider = splitPane.getDividers().getFirst();
+        centerDivider = splitPane.getDividers().get(1);
+        rightDivider = splitPane.getDividers().getLast();
     }
 
-    private void animateDividerPosition(double target) {
-        DoubleProperty pos = splitPane.getDividers().getFirst().positionProperty();
+    private void leftFocus() {
+        //animate the rightDivider to reflect the buttons size
+        animateDividerPosition(leftDivider, 0.08);
+        animateDividerPosition(centerDivider, 0.92);
+        animateDividerPosition(rightDivider, 0.92);
+    }
+
+    private void rightFocus() {
+        //animate the rightDivider to reflect the buttons size
+        animateDividerPosition(leftDivider, 0.92);
+        animateDividerPosition(centerDivider, 0.08);
+        animateDividerPosition(rightDivider, 0.08);
+    }
+
+    private void animateDividerPosition(SplitPane.Divider divider,double target) {
+        DoubleProperty position = divider.positionProperty();
         Timeline tl = new Timeline(
                 new KeyFrame(
                         Duration.millis(300),
                         new KeyValue(
-                                pos,
+                                position,
                                 target,
                                 Interpolator.EASE_BOTH)));
         tl.play();
     }
-
-    private void widenTabsHorizontally(TabPane tabPane, double width) {
-        // Force CSS and layout so headers exist
-        tabPane.applyCss();
-        tabPane.layout();
-
-        var tabHeaderArea = tabPane.lookup(".tab-header-area");
-        if (!(tabHeaderArea instanceof Region headerRegion)) {
-            log.warn("No .tab-header-area found or not a Region for {}", tabPane);
-            return;
-        }
-
-        // Set width on tab header area itself
-        headerRegion.setMaxHeight(width);
-        headerRegion.setPrefHeight(width);
-        headerRegion.setMinHeight(width);
-
-        var tabHeaders = headerRegion.lookupAll(".tab");
-        for (var node : tabHeaders) {
-            if (node instanceof Region tabHeader) {
-                tabHeader.setMinHeight(width);
-                tabHeader.setPrefHeight(width);
-                tabHeader.setMaxHeight(width);
-                tabHeader.setMinWidth(60);
-                tabHeader.setPrefWidth(60);
-                tabHeader.setMaxWidth(60);
-
-                // Optionally set padding or margin on tab header if needed
-                tabHeader.setPadding(new Insets(0, 10, 0, 10)); // horizontal padding
-            }
-        }
-
-        // Force layout pass to apply changes
-        tabPane.requestLayout();
-        tabPane.layout();
-    }
-
 
     private void setActiveTabPane(TabPane active, TabPane inactive) {
         active.getStyleClass().add("active");
@@ -170,6 +99,6 @@ public class SplitCenterController implements ThemeChangeListener {
 
     @Override
     public void onThemeChanged(Style newTheme) {
-        styleManager.toggleSceneStyle(groupTabPane.getScene(), this);
+        styleManager.toggleSceneStyle(splitPane.getScene(), this);
     }
 }

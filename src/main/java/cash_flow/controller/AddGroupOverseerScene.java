@@ -37,7 +37,10 @@ public class AddGroupOverseerScene implements ThemeChangeListener {
     private final OverseerService overseerService;
     private final ChooseCashCollectionGroupController chooseCashCollectionGroupController;
 
-    public AddGroupOverseerScene(StyleManager styleManager, ControllerUtilities controllerUtilities, OverseerService overseerService, ChooseCashCollectionGroupController chooseCashCollectionGroupController) {
+    public AddGroupOverseerScene(StyleManager styleManager,
+                                 ControllerUtilities controllerUtilities,
+                                 OverseerService overseerService,
+                                 ChooseCashCollectionGroupController chooseCashCollectionGroupController) {
         this.styleManager = styleManager;
         this.controllerUtilities = controllerUtilities;
         this.overseerService = overseerService;
@@ -65,7 +68,6 @@ public class AddGroupOverseerScene implements ThemeChangeListener {
         systemResponseLabel.setText(creationStatus.getMessage());
         if(creationStatus.equals(StatusResponses.SUCCESS)) {
             log.info("Overseer created successfully, updating overseer list in ChooseCashCollectionGroupController");
-
             controllerUtilities.closeStage(createNewOverseer);
         }
     }

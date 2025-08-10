@@ -22,6 +22,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -90,14 +91,41 @@ public class ChooseCashCollectionGroupController implements ThemeChangeListener 
         Platform.runLater(() -> {
             Stage stage = (Stage) cashCollectionGroupListView.getScene().getWindow();
             loadCombobox();
+
+            // Set converter immediately after ComboBox is initialized and has data
+            groupOverseerBox.setConverter(new StringConverter<SelectionParentClass>() {
+                @Override
+                public String toString(SelectionParentClass overseer) {
+                    if (overseer instanceof OverseerSelectionDetails details) {
+                        return details.getName();
+                    }
+                    return "";
+                }
+
+                @Override
+                public SelectionParentClass fromString(String string) {
+                    return null;
+                }
+            });
+
             stage.focusedProperty().addListener((obs, oldFocus, newFocus) -> {
                 if (newFocus.equals(true)) {
                     log.info("Stage focused, reloading overseer list and groups.");
-                    // Reload overseers and groups when the stage gains focus
                     loadCombobox();
+                }
+
+                if (!appContext.getOverseerContext().getOverseerId().isBlank()) {
+                    OverseerSelectionDetails selectedOverseer = overseerService.getOverSeerDetails(
+                            appContext.getOverseerContext().getOverseerId());
+                    loadOverseerGroups(selectedOverseer); // Load groups for selected overseer
+                    log.info("Selected overseer: {}", selectedOverseer);
+
+                    // Select AFTER converter is set
+                    groupOverseerBox.getSelectionModel().select(selectedOverseer);
                 }
             });
         });
+
 
         setupCombobox();
 
@@ -111,24 +139,12 @@ public class ChooseCashCollectionGroupController implements ThemeChangeListener 
                 appContext.getOverseerContext().setOverseerId(selectedOverseer.getId());
             } else {
                 log.warn("No overseer selected, cannot load groups.");
-
             }
         });
 
         // Attach ListView click handler once
         cashCollectionGroupListView.setOnMouseClicked(this::handleCashCollectionGroupListViewClick);
 
-        Platform.runLater(() -> {
-            Stage stage = (Stage) cashCollectionGroupListView.getScene().getWindow();
-            stage.focusedProperty().addListener((obs, oldFocus, newFocus) -> {
-                if (newFocus.equals(true) && appContext.getGroupContext() != null) {
-                    sceneEngine.loadingNextScene(SceneType.SPLIT_CENTER);
-                    controllerUtilities.closeStage(cashCollectionGroupListView);
-
-                }
-
-            });
-        });
         log.info("ChooseCashCollectionGroupController initialized");
     }
 
@@ -215,7 +231,8 @@ public class ChooseCashCollectionGroupController implements ThemeChangeListener 
                     (GroupSelectionDetails) cashCollectionGroupListView
                             .getSelectionModel().getSelectedItem();
 
-            if (selectedItem != null && !"Új csoport".equals(selectedItem.getName())) {
+            if (selectedItem != null &&
+                    !"Új csoport".equals(selectedItem.getName())) {
                 // Handle regular group selection
                 log.info("Selected Cash Collection Group: {}", selectedItem);
                 Long groupId = selectedItem.getGroupId();
@@ -224,7 +241,7 @@ public class ChooseCashCollectionGroupController implements ThemeChangeListener 
                 Stage stage = (Stage) cashCollectionGroupListView.getScene().getWindow();
                 stage.close(); // Close the current stage
                 sceneEngine.loadingNextScene(SceneType.SPLIT_CENTER);
-
+                controllerUtilities.closeStage(cashCollectionGroupListView);
             } else if (selectedItem != null) {
                 // Handle the "Add New" item
                 log.info("Add New Cash Collection Group clicked");

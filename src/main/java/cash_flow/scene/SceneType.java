@@ -9,7 +9,7 @@ public enum SceneType {
     LOADING("/scenes/loading/loading_scene.properties"),
     ADD_GROUP_OVERSEER("/scenes/add_group_overseer/add_group_overseer_scene.properties"),
     ADD_GROUP_MEMBERS("/scenes/add_group_members/add_members_scene.properties"),
-    CREATE_GROUP("/scenes/create_group/create_scene.properties"),
+    CREATE_GROUP("/scenes/create_group/create_group_scene.properties"),
     LIST_CELL("/scenes/list_cell/list_cell_scene.properties"),
     GROUP_CHOOSING("/scenes/group_choosing/choose_cash_collection_group_scene.properties"),
     GROUP_DATA("/scenes/group_data/group_data_scene.properties"),

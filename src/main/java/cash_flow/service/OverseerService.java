@@ -1,6 +1,7 @@
 package cash_flow.service;
 
 import cash_flow.common.StatusResponses;
+import cash_flow.context.AppContext;
 import cash_flow.domain.Overseer;
 import cash_flow.domain.PersonType;
 import cash_flow.dto.incoming.OverseerCreationCommand;
@@ -22,12 +23,14 @@ public class OverseerService {
     private final OverseerRepository overseerRepository;
     private final ModelMapper modelMapper;
     private final PersonService personService;
+    private final AppContext appContext;
 
     @Autowired
-    public OverseerService(OverseerRepository overseerRepository, ModelMapper modelMapper, PersonService personService) {
+    public OverseerService(OverseerRepository overseerRepository, ModelMapper modelMapper, PersonService personService, AppContext appContext) {
         this.overseerRepository = overseerRepository;
         this.modelMapper = modelMapper;
         this.personService = personService;
+        this.appContext = appContext;
     }
 
     public StatusResponses createNewOverseer(OverseerCreationCommand command) {
@@ -62,6 +65,7 @@ public class OverseerService {
         // Save the overseer entity to the repository
         overseerRepository.save(overseer);
         log.info("New overseer created: {} {}", overseer.getFirstName(), overseer.getLastName());
+        appContext.getOverseerContext().setOverseerId(id);
         return StatusResponses.SUCCESS;
     }
 
@@ -79,6 +83,15 @@ public class OverseerService {
             }
         });
         return overseerSelectionDetails;
+    }
+
+    public OverseerSelectionDetails getOverSeerDetails(String id) {
+        // Retrieve the overseer by ID
+        Overseer overseer = overseerRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Overseer with ID " + id + " not found"));
+
+        // Map the Overseer entity to OverseerSelectionDetails DTO
+        return (OverseerSelectionDetails) personService.createSelectionDetails(overseer);
     }
 
 

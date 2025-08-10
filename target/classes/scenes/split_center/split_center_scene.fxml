@@ -1,26 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <SplitPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="cash_flow.controller.SplitCenterController"
-           fx:id="splitPane">
-
-
-        <TabPane side="LEFT" fx:id="groupTabPane"/>
-
-
-
-        <TabPane side="RIGHT" fx:id="membersTabPane">
-            <Tab closable="false" fx:id="addMemberTab">
-                <graphic>
-                    <Label fx:id="addMember" text="+"/>
-                </graphic>
-            </Tab>
-        </TabPane>
+           fx:id="splitPane" styleClass="inner-split-pane">
+    <VBox fx:id="leftGroupTabs" styleClass="left-group-tabs"/>
+    <VBox fx:id="leftGroupContent" styleClass="content-pane"/>
+    <VBox fx:id="rightMemberContent" styleClass="content-pane"/>
+    <VBox fx:id="rightMemberTabs" styleClass="right-group-tabs"/>
 
 
 </SplitPane>

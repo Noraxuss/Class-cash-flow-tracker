@@ -12,4 +12,5 @@ public abstract class SelectionParentClass {
 
     private String id;
     private String name;
+
 }

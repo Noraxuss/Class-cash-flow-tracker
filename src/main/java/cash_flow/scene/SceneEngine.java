@@ -3,7 +3,7 @@ package cash_flow.scene;
 import cash_flow.application.SpringFXMLLoader;
 import cash_flow.context.AppContext;
 import cash_flow.controller.BaseLayoutController;
-import cash_flow.controller.DeferredSceneInit;
+import cash_flow.controller.utilities.DeferredSceneInit;
 import cash_flow.controller.SplitCenterController;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
