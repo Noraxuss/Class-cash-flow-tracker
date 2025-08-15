@@ -8,16 +8,79 @@
       fx:controller="cash_flow.controller.GroupOverviewController"
       spacing="10">
 
-    <Label text="Group Overview" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+    <!-- Name Row -->
+    <HBox spacing="8">
+        <Label fx:id="nameLabel" text="%Name_label" />
+        <StackPane fx:id="nameStackPane">
+            <Label fx:id="nameValue" />
+            <TextField fx:id="nameTextField" visible="false" />
+        </StackPane>
+        <StackPane fx:id="nameButtonStackPane">
+            <Button fx:id="editNameButton" text="✏️" onAction="#onEditNameClicked">
+                <tooltip>
+                    <Tooltip text="%Edit_name_tooltip" />
+                </tooltip>
+            </Button>
+            <Button fx:id="saveNameButton" text="✔️" visible="false"
+                    onAction="#onSaveNameClicked">
+                <tooltip>
+                    <Tooltip text="%Save_name_tooltip" />
+                </tooltip>
+            </Button>
+        </StackPane>
+    </HBox>
+
+    <!-- Description Row -->
+    <HBox spacing="8">
+        <Label fx:id="descriptionLabel" text="%Description_label" />
+        <StackPane fx:id="descriptionStackPane">
+            <Label fx:id="descriptionValue" />
+            <TextField fx:id="descriptionTextField" visible="false" />
+        </StackPane>
+        <StackPane fx:id="descriptionButtonStackPane">
+            <Button fx:id="editDescriptionButton" text="✏️" onAction="#onEditDescriptionClicked">
+                <tooltip>
+                    <Tooltip text="%Edit_description_tooltip" />
+                </tooltip>
+            </Button>
+            <Button fx:id="saveDescriptionButton" text="✔️" visible="false"
+                    onAction="#onSaveDescriptionClicked">
+                <tooltip>
+                    <Tooltip text="%Save_description_tooltip" />
+                </tooltip>
+            </Button>
+        </StackPane>
+    </HBox>
+
 
     <HBox>
-        <Label fx:id="groupNameLabel" text="Group name: " />
-        <Label fx:id="groupNameValue" />
+        <Label fx:id="startDateLabel" text="%Start_date_label" />
+        <Label fx:id="startDateValue" />
     </HBox>
 
     <HBox>
-        <Label fx:id="groupSizeLabel" text="Group size: " />
-        <Label fx:id="groupSizeValue" />
+        <Label fx:id="endDateLabel" text="%End_date_label" />
+        <Label fx:id="endDateValue" />
+    </HBox>
+
+    <HBox>
+        <Label fx:id="overseerNameLabel" text="%Overseer_name_label" />
+        <Label fx:id="overseerNameValue" />
+    </HBox>
+
+    <HBox>
+        <Label fx:id="numberOfMembersLabel" text="%Number_of_members_label" />
+        <Label fx:id="numberOfMembersValue" />
+    </HBox>
+
+    <HBox>
+        <Label fx:id="totalPaymentLabel" text="%Total_payment_label" />
+        <Label fx:id="totalPaymentValue" />
+    </HBox>
+
+    <HBox>
+        <Label fx:id="currentAmountOfMoney" text="%Current_amount_of_money" />
+        <Label fx:id="currentAmountOfMoneyValue" />
     </HBox>
 
 </VBox>

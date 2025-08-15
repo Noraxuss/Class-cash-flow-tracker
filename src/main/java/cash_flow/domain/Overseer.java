@@ -16,10 +16,10 @@ import java.util.List;
 @Table(name = "overseers")
 public class Overseer extends Person{
 
-    @OneToMany
+    @OneToMany(mappedBy = "overseer")
     private List<Member> members;
 
-    @OneToMany
+    @OneToMany(mappedBy = "overseer")
     private List<Group> groups;
 
 }

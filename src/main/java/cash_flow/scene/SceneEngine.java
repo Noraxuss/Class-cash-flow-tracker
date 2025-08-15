@@ -3,8 +3,8 @@ package cash_flow.scene;
 import cash_flow.application.SpringFXMLLoader;
 import cash_flow.context.AppContext;
 import cash_flow.controller.BaseLayoutController;
-import cash_flow.controller.utilities.DeferredSceneInit;
 import cash_flow.controller.SplitCenterController;
+import cash_flow.controller.utilities.DeferredSceneInit;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -43,7 +43,6 @@ public class SceneEngine {
     private Stage mainStage;
 
     private boolean isFirstSceneLoad = true;
-
 
     /**
      * Constructor for SceneEngine, initializes the dependencies.
@@ -99,7 +98,6 @@ public class SceneEngine {
                 case "center" -> updateCenterScene(sceneConfiguration);
                 case "extra" -> createExtraScene(sceneConfiguration, sceneType);
                 case "base" -> createBaseLayout(sceneConfiguration);
-//                case "split_center" -> updateSplitCenterPane(sceneConfiguration);
                 default -> throw new IllegalArgumentException("Invalid scene placement: " + scenePlacement);
             }
         } catch (IOException e) {
@@ -131,7 +129,7 @@ public class SceneEngine {
                 switchScene(nextScene);  // This automatically hides the loader
             });
             pauseTransition.play();
-        } else  {
+        } else {
             switchScene(nextScene);
         }
     }
@@ -183,29 +181,6 @@ public class SceneEngine {
             }
         });
     }
-
-
-    /**
-     * Updates the split center pane with the specified scene configuration.
-     * This method loads the scene and sets it in the appropriate side of the split center pane.
-     *
-     * @param configuration the scene configuration containing FXML and CSS paths
-     * @throws IOException if the FXML file cannot be loaded
-     */
-//    private void updateSplitCenterPane(SceneConfiguration configuration) throws IOException {
-//        log.info("Updating split center pane with scene: {}", configuration);
-//
-//        FXMLLoader loader = loadScene(configuration);
-//        Parent scene = loader.load();
-//
-//        if (configuration.getSide().equals("left")) {
-//            splitCenterController.setLeftPane(scene);
-//        } else if (configuration.getSide().equals("right")) {
-//            splitCenterController.setRightPane(scene);
-//        } else {
-//            throw new IllegalArgumentException("Invalid side for split center pane: " + configuration.getSide());
-//        }
-//    }
 
     /**
      * Creates an extra scene displayed as a modal dialog.
@@ -305,6 +280,24 @@ public class SceneEngine {
 
             return springFXMLLoader.load(configuration);
         } catch (IllegalArgumentException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Gets the scene for the specified scene type.
+     * This method loads the FXML and returns a new Scene instance.
+     *
+     * @param sceneType the type of scene to get
+     * @return a new Scene instance for the specified scene type
+     */
+    public Scene getScene(SceneType sceneType) {
+        try {
+            FXMLLoader loader = createSceneComponent(sceneType);
+            Parent root = loader.load();
+            return new Scene(root);
+        } catch (IOException e) {
+            log.error("Error loading scene {}: {}", sceneType, e.getMessage());
             throw new RuntimeException(e);
         }
     }

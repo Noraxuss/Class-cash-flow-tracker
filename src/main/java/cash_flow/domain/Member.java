@@ -18,16 +18,16 @@ public class Member extends Person {
     @JoinColumn(name = "overseer_id", nullable = false)
     private Overseer overseer;
 
-    @OneToMany
+    @OneToMany(mappedBy = "member")
     private List<Guardian> guardians;
 
-    @OneToMany
+    @OneToMany(mappedBy = "member")
     private List<GroupMembership> groupMemberships;
 
-    @OneToMany
+    @OneToMany(mappedBy = "member")
     private List<RequiredPayment> requiredPayments;
 
-    @OneToMany
+    @OneToMany(mappedBy = "member")
     private List<Payment> payments;
 
 }

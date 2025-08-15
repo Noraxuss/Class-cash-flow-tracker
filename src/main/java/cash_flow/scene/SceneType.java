@@ -12,13 +12,15 @@ public enum SceneType {
     CREATE_GROUP("/scenes/create_group/create_group_scene.properties"),
     LIST_CELL("/scenes/list_cell/list_cell_scene.properties"),
     GROUP_CHOOSING("/scenes/group_choosing/choose_cash_collection_group_scene.properties"),
-    GROUP_DATA("/scenes/group_data/group_data_scene.properties"),
-    MEMBER_DATA("/scenes/member_data/member_data_scene.properties"),
+    ADD_PAYMENT("/scenes/add_payment/add_payment_scene.properties"),
     SPLIT_CENTER("/scenes/split_center/split_center_scene.properties"),
     GROUP_OVERVIEW("/scenes/group_overview/group_overview_scene.properties"),
-    GROUP_MEMBER_DATA("/scenes/group_member_data/group_member_data_scene.properties");
+    MEMBER_OVERVIEW("/scenes/member_overview/member_overview_scene.properties");
 
-
+//    GROUP_DATA("/not-in-use/group_data-not_in_use/group_data_scene.properties"),
+//    MEMBER_DATA("/not-in-use/member_data-not_in_use/member_data_scene.properties"),
+//    GROUP_OVERVIEW("/not-in-use/group_overview-not_in_use/group_overview_scene.properties"),
+//    GROUP_MEMBER_DATA("/not-in-use/group_member_data-not_in_use/group_member_data_scene.properties");
 
     private final String propertiesFilePath;
 

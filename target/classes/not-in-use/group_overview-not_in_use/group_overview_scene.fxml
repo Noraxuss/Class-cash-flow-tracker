@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="cash_flow.controller.GroupOverviewController"
+      spacing="10">
+
+    <Label text="Group Overview" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+
+    <HBox>
+        <Label fx:id="groupNameLabel" text="Group name: " />
+        <Label fx:id="groupNameValue" />
+    </HBox>
+
+    <HBox>
+        <Label fx:id="groupSizeLabel" text="Group size: " />
+        <Label fx:id="groupSizeValue" />
+    </HBox>
+
+</VBox>

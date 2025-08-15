@@ -249,18 +249,23 @@ public class AddGroupMembersController implements ThemeChangeListener {
     }
 
     private static boolean checkIfGroupMemberExists(GroupMemberRowModel groupMember) {
-        if (groupMember.getMemberFirstName() == null ||
-                groupMember.getMemberFirstName().get().isBlank() ||
-                groupMember.getMemberLastName() == null ||
-                groupMember.getMemberLastName().get().isBlank() ||
-                groupMember.getMemberEmail() == null ||
-                groupMember.getMemberEmail().get().isBlank()) {
-            log.warn("Skipping incomplete member: {} {}, missing required fields.",
-                    groupMember.getMemberFirstName().orElse("UNKNOWN"),
-                    groupMember.getMemberLastName().orElse("UNKNOWN"));
-            return true;
+        try {
+            if (groupMember.getMemberFirstName() == null ||
+                    groupMember.getMemberFirstName().get().isBlank() ||
+                    groupMember.getMemberLastName() == null ||
+                    groupMember.getMemberLastName().get().isBlank() ||
+                    groupMember.getMemberEmail() == null ||
+                    groupMember.getMemberEmail().get().isBlank()) {
+                log.warn("Skipping incomplete member: {} {}, missing required fields.",
+                        groupMember.getMemberFirstName().orElse("UNKNOWN"),
+                        groupMember.getMemberLastName().orElse("UNKNOWN"));
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            log.info("I am Your issue: {}", e.getMessage());
+            throw new RuntimeException(e);
         }
-        return false;
     }
 
     @FXML
