@@ -1,9 +1,11 @@
 package cash_flow.config;
 
 import cash_flow.domain.Group;
+import cash_flow.domain.Member;
 import cash_flow.domain.Overseer;
 import cash_flow.dto.incoming.GroupCreationCommand;
 import cash_flow.dto.outgoing.GroupSelectionDetails;
+import cash_flow.dto.outgoing.MemberOverviewDetails;
 import cash_flow.dto.outgoing.OverseerSelectionDetails;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
@@ -44,9 +46,7 @@ public class ModelMapperConfig {
                 .addMappings(mapper ->
                         mapper.map(Group::getId, GroupSelectionDetails::setGroupId));
 
-//        modelMapper.typeMap(GroupMemberCreationCommand.class, Member.class)
-//                .addMappings(mapper ->
-//                        mapper.skip()
+
 
         return modelMapper;
     }

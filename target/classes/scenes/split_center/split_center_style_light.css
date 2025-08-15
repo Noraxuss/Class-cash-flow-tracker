@@ -1,7 +1,7 @@
-/*Light theme for split center layout*/
+/* Light theme for split center layout */
 .split-pane-divider {
-    -fx-padding: 0;               /* no fat grip */
-    -fx-background-color: rgba(0,0,0,0.08); /* faint line */
+    -fx-padding: 0; /* no fat grip */
+    -fx-background-color: #14141414; /* semi-transparent black (08 in alpha) */
 }
 
 .split-pane-divider > .split-pane-divider {
@@ -10,14 +10,46 @@
 
 /* Darker side tab areas */
 .left-group-tabs {
-    -fx-background-color: derive(#9e9d9d, 80%); /* 20% lighter/darker than base */
+    -fx-background-color: #bfbfbf; /* approximate 80% of #9e9d9d */
 }
 
 .right-group-tabs {
-    -fx-background-color: derive(#9e9d9d, 80%);
+    -fx-background-color: #bfbfbf;
 }
 
 /* Optional: content panes can stay light or follow theme */
 .content-pane {
     -fx-background-color: #f8f8f8;
+}
+
+/* Base style for all side tab buttons */
+.button.side-tab {
+    -fx-background-color: transparent;
+    -fx-text-fill: #333333; /* dark text like Chrome */
+    -fx-font-weight: bold;
+    -fx-padding: 8 12 8 12; /* top, right, bottom, left */
+    -fx-background-radius: 6 6 0 0; /* rounded top corners */
+    -fx-border-radius: 6 6 0 0;
+    -fx-border-color: transparent;
+    -fx-border-width: 0 0 2 0; /* underline for selection later */
+    -fx-cursor: hand;
+    -fx-alignment: center-left;
+}
+
+/* Hover effect */
+.button.side-tab:hover {
+    -fx-background-color: #e6e6e6; /* light gray highlight */
+}
+
+/* Active / selected tab */
+.button.side-tab:selected, .button.side-tab.active {
+    -fx-background-color: #ffffff; /* white background like active Chrome tab */
+    -fx-border-color: #4285f4; /* Chrome-blue underline */
+    -fx-border-width: 0 0 2 0;
+}
+
+/* Optional: truncate long text with ellipsis */
+.button.side-tab .text {
+    -fx-text-overrun: ellipsis;
+    -fx-wrap-text: false;
 }

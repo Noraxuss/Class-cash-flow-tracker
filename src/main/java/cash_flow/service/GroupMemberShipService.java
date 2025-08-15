@@ -36,4 +36,19 @@ public class GroupMemberShipService {
         log.info("Created membership for member {} in group {}", member.getId(), group.getId());
 
     }
+
+    public GroupMembership getGroupMembershipByMemberId(String id) {
+        if (id == null || id.isEmpty()) {
+            log.error("Member ID is null or empty, cannot retrieve group membership");
+            return null;
+        }
+
+        GroupMembership groupMembership = groupMembershipRepository.findByMemberId(id);
+        if (groupMembership == null) {
+            log.warn("No group membership found for member ID: {}", id);
+        } else {
+            log.info("Found group membership for member ID: {}", id);
+        }
+        return groupMembership;
+    }
 }

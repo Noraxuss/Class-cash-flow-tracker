@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="cash_flow.controller.MemberOverviewController"
+      spacing="10">
+
+    <HBox>
+        <Label fx:id="nameLabel" text="%Name_label" />
+        <StackPane fx:id="nameStackPane">
+            <Label fx:id="nameValue" />
+            <TextField fx:id="nameTextField" visible="false"/>
+        </StackPane>
+        <StackPane fx:id="buttonStackPane">
+            <Button fx:id="editNameButton" text="✏️" onAction="#onEditNameClicked">
+                <tooltip>
+                    <Tooltip text="%Edit_name_tooltip" />
+                </tooltip>
+            </Button>
+            <Button fx:id="saveNameButton" text="✔️" visible="false"
+                    onAction="#onSaveEditNameClicked">
+                <tooltip>
+                    <Tooltip text="%Save_edited_name_tooltip" />
+                </tooltip>
+            </Button>
+        </StackPane>
+    </HBox>
+
+    <HBox>
+        <Label fx:id="emailLabel" text="%Email_label" />
+        <Label fx:id="emailValue" />
+    </HBox>
+
+    <HBox>
+        <Label fx:id="groupJoinDateLabel" text="%Group_join_date" />
+        <Label fx:id="groupJoinDateValue" />
+    </HBox>
+
+    <HBox>
+        <Label fx:id="groupLeaveDateLabel" text="%Group_leave_date" />
+        <Label fx:id="groupLeaveDateValue" />
+    </HBox>
+
+    <HBox>
+        <Label fx:id="groupMembershipsLabel" text="%Group_memberships" />
+    </HBox>
+
+    <HBox>
+        <Label fx:id="totalPaymentLabel" text="%Total_payment-label" />
+        <Label fx:id="totalPaymentValue" />
+    </HBox>
+</VBox>

@@ -2,12 +2,13 @@
 
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.StackPane?>
 <SplitPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="cash_flow.controller.SplitCenterController"
            fx:id="splitPane" styleClass="inner-split-pane">
     <VBox fx:id="leftGroupTabs" styleClass="left-group-tabs"/>
-    <VBox fx:id="leftGroupContent" styleClass="content-pane"/>
-    <VBox fx:id="rightMemberContent" styleClass="content-pane"/>
+    <StackPane fx:id="leftGroupContent" styleClass="content-pane"/>
+    <StackPane fx:id="rightMemberContent" styleClass="content-pane"/>
     <VBox fx:id="rightMemberTabs" styleClass="right-group-tabs"/>
 
 

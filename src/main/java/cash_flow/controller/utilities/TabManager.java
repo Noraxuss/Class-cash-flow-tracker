@@ -1,34 +1,99 @@
 package cash_flow.controller.utilities;
 
+import cash_flow.application.Utf8Control;
+import cash_flow.context.AppContext;
+import cash_flow.controller.MemberOverviewController;
+import cash_flow.controller.SplitCenterController;
+import cash_flow.dto.outgoing.MemberOverviewDetails;
+import cash_flow.scene.SceneConfiguration;
 import cash_flow.scene.SceneConfigurationLoader;
 import cash_flow.scene.SceneEngine;
+import cash_flow.scene.SceneType;
+import cash_flow.style_manager.StyleManager;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 
 @Component
 @Slf4j
 public class TabManager {
 
     private final SceneEngine sceneEngine;
+    private final SplitCenterController splitCenterController;
     private final SceneConfigurationLoader sceneConfigurationLoader;
+    private final SceneConfiguration sceneConfiguration;
+    private final StyleManager styleManager;
+    private final ControllerUtilities controllerUtilities;
+    private final AppContext appContext;
 
-    private Map<String, Scene> tabScenes;
 
-
-    public TabManager(SceneEngine sceneEngine, SceneConfigurationLoader sceneConfigurationLoader) {
+    public TabManager(SceneEngine sceneEngine,
+                      @Lazy SplitCenterController splitCenterController, SceneConfigurationLoader sceneConfigurationLoader, SceneConfiguration sceneConfiguration,
+                      StyleManager styleManager,
+                      ControllerUtilities controllerUtilities,
+                      AppContext appContext) {
         this.sceneEngine = sceneEngine;
+        this.splitCenterController = splitCenterController;
         this.sceneConfigurationLoader = sceneConfigurationLoader;
-        tabScenes = new HashMap<>();
+        this.sceneConfiguration = sceneConfiguration;
+        this.styleManager = styleManager;
+        this.controllerUtilities = controllerUtilities;
+        this.appContext = appContext;
     }
 
-    public Scene createTabScene(String tabName) {
-//        log.info("Creating scene for tab: {}", tabName);
-//        return new Scene();
+    public void createGroupScenes(GroupOverViewEnum groupOverViewEnum, ResourceBundle resources) {
+        Scene scene = sceneEngine.getScene(groupOverViewEnum.getSceneType());
 
+        Button button = new Button(
+                resources.getString(groupOverViewEnum.getButtonMessagesId())
+        );
+        button.setId(groupOverViewEnum.getId());
+        Parent root = scene.getRoot();
+        root.setId(groupOverViewEnum.getId());
+        splitCenterController.addSceneRootToLeftGroupContent(root);
+        splitCenterController.addButtonsToLeftGroupTabs(button);
+    }
+
+    public void createMemberScenes(SceneType memberOverview, MemberOverviewDetails details) {
+        try {
+            sceneConfigurationLoader.load(memberOverview);
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource(sceneConfiguration.getFxml()));
+            ResourceBundle resourceBundle =
+                    ResourceBundle.getBundle(sceneConfiguration.getMessages(), new Utf8Control());
+            loader.setResources(resourceBundle);
+            Parent sceneRoot = loader.load();
+            // Set the scene root
+            sceneRoot.setId(details.getId());
+
+            // Access the controller
+            MemberOverviewController controller = loader.getController();
+            // Set the necessary dependencies
+            controller.setStyleManager(styleManager);
+            controller.setControllerUtilities(controllerUtilities);
+            controller.setSceneEngine(sceneEngine);
+            controller.setAppContext(appContext);
+            controller.setMemberOverviewDetails(details);
+
+            // Optionally, set up buttons if needed
+            Button tabButton = new Button(details.getName());
+            tabButton.setId(details.getId());
+            splitCenterController.addButtonsToRightMemberTabs(tabButton);
+
+            // Add the scene root to your right content
+            splitCenterController.addSceneRootToRightMemberContent(sceneRoot);
+
+        } catch (IOException e) {
+            log.error("Failed to load member scene", e);
+        }
     }
 
 }
