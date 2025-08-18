@@ -37,9 +37,6 @@ public class MemberService {
     private final GroupMemberShipService groupMemberShipService;
     private final PaymentService paymentService;
 
-
-
-
     @Autowired
     public MemberService(MemberRepository memberRepository,
                          ModelMapper modelMapper,

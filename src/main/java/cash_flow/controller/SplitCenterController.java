@@ -99,6 +99,8 @@ public class SplitCenterController implements ThemeChangeListener {
     public void initialize() {
         log.info("SplitCenterController initialized");
 
+        controllerUtilities.initializeSceneStyle(splitPane, this);
+
         setDividers();
         setContentPaneMinWidth();
 
@@ -107,7 +109,7 @@ public class SplitCenterController implements ThemeChangeListener {
         sortedRightMemberButtons.addListener((ListChangeListener<Button>)
                 change -> {
                     rightMemberTabs.getChildren().setAll(sortedRightMemberButtons);
-                    Platform.runLater(this::styleScene);
+                    changeStyle();
                 });
 
         tabManager.createGroupScenes(GroupOverViewEnum.OVERVIEW, resources);
@@ -125,12 +127,32 @@ public class SplitCenterController implements ThemeChangeListener {
             }
         });
 
-        Platform.runLater(this::styleScene);
+        styleSidebar(leftGroupTabs);
+        styleSidebar(rightMemberTabs);
+        styleContent(leftGroupContent);
+        styleContent(rightMemberContent);
     }
 
-    private void styleScene() {
-        sceneConfigurationLoader.load(SceneType.SPLIT_CENTER);
-        controllerUtilities.initializeSceneStyle(splitPane, this);
+    // --- Apply to sidebars (tab containers) ---
+    public static void styleSidebar(VBox sidebar) {
+        sidebar.setStyle(
+                "-fx-background-color: #bfbfbf;" // medium-light gray
+        );
+    }
+
+    // --- Apply to content panes ---
+    public static void styleContent(StackPane contentPane) {
+        contentPane.setStyle(
+                "-fx-background-color: #f8f8f8;" // lighter gray / white
+        );
+    }
+
+    private void changeStyle() {
+        Platform.runLater(() -> {
+            splitPane.getScene().getRoot().applyCss();
+            splitPane.getScene().getRoot().layout();
+        });
+
     }
 
     public void addButtonsToLeftGroupTabs(Button button) {
@@ -139,7 +161,7 @@ public class SplitCenterController implements ThemeChangeListener {
             return;
         }
         leftGroupTabs.getChildren().add(button);
-        setButtonAction(button);
+        setButtonAction(button, true); // true for left side
     }
 
     public void addButtonsToRightMemberTabs(Button button) {
@@ -148,7 +170,7 @@ public class SplitCenterController implements ThemeChangeListener {
             return;
         }
         rightMemberButtons.add(button);
-        setButtonAction(button);
+        setButtonAction(button, false); // false for right side
 
     }
 
@@ -170,30 +192,6 @@ public class SplitCenterController implements ThemeChangeListener {
         rightContentMap.put(sceneRoot.getId(), sceneRoot);
     }
 
-    public void setButtonAction(Button button) {
-        button.setOnAction(event -> {
-            String id = button.getId();
-
-            Parent sceneRoot = leftContentMap.get(id);
-            if (sceneRoot != null) {
-                sceneRoot.toFront();
-//                leftFocus();
-                adjustDividersForLeft(); // <-- new: shift dividers based on largest left button
-                return;
-            }
-
-            sceneRoot = rightContentMap.get(id);
-            if (sceneRoot != null) {
-                sceneRoot.toFront();
-//                rightFocus();
-                adjustDividersForRight(); // <-- new: shift dividers based on largest right button
-                return;
-            }
-
-            log.warn("No scene found for button with id: {}", id);
-        });
-    }
-
     private double getLargestButtonWidth(VBox buttonContainer) {
         // Ensure the layout is up to date
         buttonContainer.applyCss();
@@ -210,7 +208,7 @@ public class SplitCenterController implements ThemeChangeListener {
         double largestButtonWidth = getLargestButtonWidth(rightMemberTabs);
         double totalWidth = splitPane.getWidth();
 
-        double extraPadding = 0.044 * largestButtonWidth;
+        double extraPadding = 0.046 * largestButtonWidth;
         // Compute ratio of space to give right side (add some padding)
         double rightRatio = (largestButtonWidth + extraPadding) / totalWidth;
 
@@ -224,7 +222,7 @@ public class SplitCenterController implements ThemeChangeListener {
         double largestButtonWidth = getLargestButtonWidth(leftGroupTabs);
         double totalWidth = splitPane.getWidth();
 
-        double extraPadding = 0.044 * largestButtonWidth;
+        double extraPadding = 0.046 * largestButtonWidth;
         double leftRatio = (largestButtonWidth + extraPadding) / totalWidth;
 
         animateDividerPosition(leftDivider, leftRatio);
@@ -236,25 +234,22 @@ public class SplitCenterController implements ThemeChangeListener {
         leftDivider = splitPane.getDividers().getFirst();
         centerDivider = splitPane.getDividers().get(1);
         rightDivider = splitPane.getDividers().getLast();
+
+        splitPane.lookupAll(".split-pane-divider").forEach(divider -> {
+            divider.setStyle(
+                    "-fx-background-color: #ccc;" + // divider color
+                            "-fx-padding: 0;" +
+                            "-fx-background-insets: 0;" +
+                            "-fx-pref-width: 3px;" +        // make it visually thin
+                            "-fx-min-width: 3px;" +
+                            "-fx-max-width: 3px;"
+            );
+        });
     }
 
     private void setContentPaneMinWidth() {
         leftGroupContent.setMinWidth(0);
         rightMemberContent.setMinWidth(0);
-    }
-
-    private void leftFocus() {
-        //animate the rightDivider to reflect the buttons size
-        animateDividerPosition(leftDivider, 0.08);
-        animateDividerPosition(centerDivider, 0.92);
-        animateDividerPosition(rightDivider, 0.92);
-    }
-
-    private void rightFocus() {
-        //animate the rightDivider to reflect the buttons size
-        animateDividerPosition(leftDivider, 0.92);
-        animateDividerPosition(centerDivider, 0.08);
-        animateDividerPosition(rightDivider, 0.08);
     }
 
     private void animateDividerPosition(SplitPane.Divider divider, double target) {
@@ -269,10 +264,108 @@ public class SplitCenterController implements ThemeChangeListener {
         tl.play();
     }
 
-    private void setActiveTabPane(TabPane active, TabPane inactive) {
-        active.getStyleClass().add("active");
-        inactive.getStyleClass().remove("active");
+    // --- Base inactive + hover style for side tabs ---
+    // --- Apply to side tab buttons ---
+    public static void styleSideTab(Button button, boolean isLeftSide) {
+        String alignment = isLeftSide ? "CENTER_RIGHT" : "CENTER_LEFT";
+        String borderRadius = isLeftSide ?  "10 0 0 10" : "0 10 10 0"; // right-rounded if left, left-rounded if right
+
+        button.setStyle(
+                "-fx-background-color: transparent;" +
+                        "-fx-text-fill: #333333;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-padding: 8 12 8 12;" +
+                        "-fx-background-radius: " + borderRadius + ";" +
+                        "-fx-border-radius: " + borderRadius + ";" +
+                        "-fx-border-color: transparent;" +
+                        "-fx-border-width: 0 0 2 0;" +
+                        "-fx-cursor: hand;" +
+                        "-fx-alignment: " + alignment + ";"
+        );
+
+        // Hover effect
+        button.setOnMouseEntered(e -> button.setStyle(
+                "-fx-background-color: #e6e6e6;" +
+                        "-fx-text-fill: #333333;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-padding: 8 12 8 12;" +
+                        "-fx-background-radius: " + borderRadius + ";" +
+                        "-fx-border-radius: " + borderRadius + ";" +
+                        "-fx-border-color: transparent;" +
+                        "-fx-border-width: 0 0 2 0;" +
+                        "-fx-cursor: hand;" +
+                        "-fx-alignment: " + alignment + ";"
+        ));
+
+        // Reset on exit
+        button.setOnMouseExited(e -> styleSideTab(button, isLeftSide));
     }
+
+    // --- Active tab style ---
+    public static void setActiveTab(Button button, boolean isLeftSide) {
+        button.getStyleClass().add("active-tab"); // mark active
+
+        String alignment = isLeftSide ? "CENTER_RIGHT" : "CENTER_LEFT";
+        String borderRadius = isLeftSide ?  "10 0 0 10" : "0 10 10 0"; // right-rounded if left, left-rounded if right
+
+        button.setStyle(
+                "-fx-background-color: #ffffff;" +       // active = white
+                        "-fx-text-fill: #333333;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-padding: 8 12 8 12;" +
+                        "-fx-background-radius: " + borderRadius + ";" +
+                        "-fx-border-radius: " + borderRadius + ";" +
+                        "-fx-border-color: rgba(66,133,244,0.14);" +
+                        "-fx-cursor: hand;" +
+                        "-fx-alignment: " + alignment + ";"
+        );
+    }
+
+
+    // --- Reset all side tabs to inactive ---
+    private void resetAllTabs() {
+        leftGroupTabs.getChildren().forEach(node -> {
+            if (node instanceof Button b) {
+                b.getStyleClass().remove("active-tab");
+                styleSideTab(b, true); // true for left side
+            }
+        });
+        rightMemberTabs.getChildren().forEach(node -> {
+            if (node instanceof Button b) {
+                b.getStyleClass().remove("active-tab");
+                styleSideTab(b, false); // false for right side
+            }
+        });
+    }
+
+    // --- Apply to each button automatically when added ---
+    public void setButtonAction(Button button, boolean isLeftSide) {
+        styleSideTab(button, isLeftSide); // always apply base styling when added
+
+        button.setOnAction(event -> {
+            resetAllTabs();     // clear all active states
+            setActiveTab(button, isLeftSide); // make this one active
+
+            String id = button.getId();
+
+            Parent sceneRoot = leftContentMap.get(id);
+            if (sceneRoot != null) {
+                sceneRoot.toFront();
+                adjustDividersForLeft();
+                return;
+            }
+
+            sceneRoot = rightContentMap.get(id);
+            if (sceneRoot != null) {
+                sceneRoot.toFront();
+                adjustDividersForRight();
+                return;
+            }
+
+            log.warn("No scene found for button with id: {}", id);
+        });
+    }
+
 
     @Override
     public void onThemeChanged(Style newTheme) {

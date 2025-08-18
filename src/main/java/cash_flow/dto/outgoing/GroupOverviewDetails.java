@@ -16,6 +16,6 @@ public class GroupOverviewDetails {
     private String overseerName;
     private int numberOfMembers;
     private int totalPayment;
-    private int RemainingMoney;
+    private int remainingMoney;
 
 }

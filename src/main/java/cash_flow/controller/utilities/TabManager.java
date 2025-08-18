@@ -56,6 +56,7 @@ public class TabManager {
                 resources.getString(groupOverViewEnum.getButtonMessagesId())
         );
         button.setId(groupOverViewEnum.getId());
+
         Parent root = scene.getRoot();
         root.setId(groupOverViewEnum.getId());
         splitCenterController.addSceneRootToLeftGroupContent(root);
@@ -71,9 +72,6 @@ public class TabManager {
                     ResourceBundle.getBundle(sceneConfiguration.getMessages(), new Utf8Control());
             loader.setResources(resourceBundle);
             Parent sceneRoot = loader.load();
-            // Set the scene root
-            sceneRoot.setId(details.getId());
-
             // Access the controller
             MemberOverviewController controller = loader.getController();
             // Set the necessary dependencies
@@ -82,6 +80,10 @@ public class TabManager {
             controller.setSceneEngine(sceneEngine);
             controller.setAppContext(appContext);
             controller.setMemberOverviewDetails(details);
+            // Set the scene root
+            sceneRoot.setId(details.getId());
+
+
 
             // Optionally, set up buttons if needed
             Button tabButton = new Button(details.getName());
@@ -95,5 +97,52 @@ public class TabManager {
             log.error("Failed to load member scene", e);
         }
     }
+
+//    // --- Apply to side tab buttons ---
+//    public static void styleSideTab(Button button) {
+//        button.setStyle(
+//                "-fx-background-color: transparent;" +
+//                        "-fx-text-fill: #333333;" +        // dark text
+//                        "-fx-font-weight: bold;" +
+//                        "-fx-padding: 8 12 8 12;" +        // top, right, bottom, left
+//                        "-fx-background-radius: 6 6 0 0;" +
+//                        "-fx-border-radius: 6 6 0 0;" +
+//                        "-fx-border-color: transparent;" +
+//                        "-fx-border-width: 0 0 2 0;" +     // underline space
+//                        "-fx-cursor: hand;" +
+//                        "-fx-alignment: center-left;"
+//        );
+//
+//        // You can also hook hover effects in code:
+//        button.setOnMouseEntered(e -> button.setStyle(
+//                "-fx-background-color: #e6e6e6;" +
+//                        "-fx-text-fill: #333333;" +
+//                        "-fx-font-weight: bold;" +
+//                        "-fx-padding: 8 12 8 12;" +
+//                        "-fx-background-radius: 6 6 0 0;" +
+//                        "-fx-border-radius: 6 6 0 0;" +
+//                        "-fx-border-color: transparent;" +
+//                        "-fx-border-width: 0 0 2 0;" +
+//                        "-fx-cursor: hand;" +
+//                        "-fx-alignment: center-left;"
+//        ));
+//        button.setOnMouseExited(e -> styleSideTab(button)); // reset on exit
+//    }
+//
+//    // --- Optional: active tab style ---
+//    public static void setActiveTab(Button button) {
+//        button.setStyle(
+//                "-fx-background-color: #ffffff;" +  // active = white
+//                        "-fx-text-fill: #333333;" +
+//                        "-fx-font-weight: bold;" +
+//                        "-fx-padding: 8 12 8 12;" +
+//                        "-fx-background-radius: 6 6 0 0;" +
+//                        "-fx-border-radius: 6 6 0 0;" +
+//                        "-fx-border-color: #4285f4;" +     // Chrome-blue underline
+//                        "-fx-border-width: 0 0 2 0;" +
+//                        "-fx-cursor: hand;" +
+//                        "-fx-alignment: center-left;"
+//        );
+//    }
 
 }

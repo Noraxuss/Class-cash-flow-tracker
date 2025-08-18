@@ -1,54 +1,47 @@
-/* Light theme for split center layout */
-.split-pane-divider {
-    -fx-padding: 0; /* no fat grip */
-    -fx-background-color: #14141414; /* semi-transparent black (08 in alpha) */
+/* Force divider styling */
+.split-pane > .split-pane-divider {
+    -fx-padding: 0;
+    -fx-background-color: #14141414 !important;
 }
 
-.split-pane-divider > .split-pane-divider {
-    -fx-background-insets: 0;
-}
-
-/* Darker side tab areas */
+/* Left/right tab panels */
 .left-group-tabs {
-    -fx-background-color: #bfbfbf; /* approximate 80% of #9e9d9d */
+    -fx-background-color: #bfbfbf;
 }
 
 .right-group-tabs {
     -fx-background-color: #bfbfbf;
 }
 
-/* Optional: content panes can stay light or follow theme */
+/* Content pane */
 .content-pane {
     -fx-background-color: #f8f8f8;
 }
 
-/* Base style for all side tab buttons */
+/* Side tab buttons */
 .button.side-tab {
     -fx-background-color: transparent;
-    -fx-text-fill: #333333; /* dark text like Chrome */
+    -fx-text-fill: #333333;
     -fx-font-weight: bold;
-    -fx-padding: 8 12 8 12; /* top, right, bottom, left */
-    -fx-background-radius: 6 6 0 0; /* rounded top corners */
+    -fx-padding: 8 12 8 12;
+    -fx-background-radius: 6 6 0 0;
     -fx-border-radius: 6 6 0 0;
     -fx-border-color: transparent;
-    -fx-border-width: 0 0 2 0; /* underline for selection later */
+    -fx-border-width: 0 0 2 0;
     -fx-cursor: hand;
     -fx-alignment: center-left;
 }
 
-/* Hover effect */
 .button.side-tab:hover {
-    -fx-background-color: #e6e6e6; /* light gray highlight */
+    -fx-background-color: #e6e6e6;
 }
 
-/* Active / selected tab */
 .button.side-tab:selected, .button.side-tab.active {
-    -fx-background-color: #ffffff; /* white background like active Chrome tab */
-    -fx-border-color: #4285f4; /* Chrome-blue underline */
+    -fx-background-color: #ffffff;
+    -fx-border-color: #4285f4;
     -fx-border-width: 0 0 2 0;
 }
 
-/* Optional: truncate long text with ellipsis */
 .button.side-tab .text {
     -fx-text-overrun: ellipsis;
     -fx-wrap-text: false;

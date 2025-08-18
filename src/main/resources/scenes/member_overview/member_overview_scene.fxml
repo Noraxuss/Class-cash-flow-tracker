@@ -6,7 +6,8 @@
 
 <VBox xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="cash_flow.controller.MemberOverviewController"
-      spacing="10">
+      spacing="10"
+      style="-fx-background-color: #f8f8f8; -fx-padding: 10;">
 
     <HBox>
         <Label fx:id="nameLabel" text="%Name_label" />

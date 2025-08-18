@@ -16,13 +16,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 @Slf4j
 public class MemberOverviewController implements ThemeChangeListener {
 
     @Setter private StyleManager styleManager = null;
-    @Setter private ControllerUtilities controllerUtilities = null;
+    private ControllerUtilities controllerUtilities = null;
     @Setter private SceneEngine sceneEngine = null;
     @Setter private AppContext appContext = null;
 
@@ -54,11 +53,10 @@ public class MemberOverviewController implements ThemeChangeListener {
     @FXML public Label totalPaymentLabel;
     @FXML public Label totalPaymentValue;
 
-    @Setter private MemberOverviewDetails memberOverviewDetails;
+    private MemberOverviewDetails memberOverviewDetails;
 
     @FXML
     public void initialize() {
-        Platform.runLater(() -> {controllerUtilities.initializeSceneStyle(nameLabel, this);});
 
     }
 
@@ -73,6 +71,27 @@ public class MemberOverviewController implements ThemeChangeListener {
     @Override
     public void onThemeChanged(Style newTheme) {
         styleManager.toggleSceneStyle(nameLabel.getScene(), this);
+    }
+
+    public void setControllerUtilities(ControllerUtilities controllerUtilities) {
+        this.controllerUtilities = controllerUtilities;
+        controllerUtilities.initializeSceneStyle(nameLabel, this);
+    }
+
+    public void setMemberOverviewDetails(MemberOverviewDetails memberOverviewDetails) {
+        this.memberOverviewDetails = memberOverviewDetails;
+        if (memberOverviewDetails != null) {
+            log.info("Setting member overview details: {}", memberOverviewDetails);
+            nameValue.setText(memberOverviewDetails.getName());
+            emailValue.setText(memberOverviewDetails.getEmail());
+            groupJoinDateValue.setText(memberOverviewDetails.getGroupJoinDate().toString());
+            groupLeaveDateValue.setText(memberOverviewDetails.getGroupLeaveDate() != null ?
+                    memberOverviewDetails.getGroupLeaveDate().toString() : "N/A");
+//            groupMembershipsLabel.setText(String.valueOf(memberOverviewDetails.getGroupMemberships().size()));
+            totalPaymentValue.setText(String.valueOf(memberOverviewDetails.getTotalPayment()));
+        } else {
+            log.warn("Member overview details are null");
+        }
     }
 
 }

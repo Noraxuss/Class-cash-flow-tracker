@@ -111,7 +111,7 @@ public class StyleManager {
         try {
             String baseCssUrl = getClass().getResource(currentTheme.getStylePath()).toExternalForm();
             scene.getStylesheets().add(baseCssUrl);
-            log.debug("Base stylesheet applied: {}", baseCssUrl);
+            log.info("Base stylesheet applied: {}", baseCssUrl);
         } catch (Exception e) {
             log.error("Failed to load base stylesheet: {}", currentTheme.getStylePath(), e);
         }
@@ -119,9 +119,12 @@ public class StyleManager {
         try {
             String sceneCssUrl = getClass().getResource(meta.getCssPath(currentTheme)).toExternalForm();
             scene.getStylesheets().add(sceneCssUrl);
-            log.debug("Scene-specific stylesheet applied: {}", sceneCssUrl);
+            log.info("Scene-specific stylesheet applied: {}", sceneCssUrl);
         } catch (Exception e) {
             log.error("Failed to load scene-specific stylesheet: {}", meta.getCssPath(currentTheme), e);
+        }
+        for (String stylesheet : scene.getStylesheets()) {
+            log.info("Applying theme to scene: {}", stylesheet);
         }
     }
 }

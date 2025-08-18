@@ -6,10 +6,10 @@
 <SplitPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="cash_flow.controller.SplitCenterController"
            fx:id="splitPane" styleClass="inner-split-pane">
-    <VBox fx:id="leftGroupTabs" styleClass="left-group-tabs"/>
-    <StackPane fx:id="leftGroupContent" styleClass="content-pane"/>
+    <VBox fx:id="leftGroupTabs" styleClass="left-group-tabs" id="left-group-tabs"/>
+    <StackPane fx:id="leftGroupContent" styleClass="content-pane" />
     <StackPane fx:id="rightMemberContent" styleClass="content-pane"/>
-    <VBox fx:id="rightMemberTabs" styleClass="right-group-tabs"/>
+    <VBox fx:id="rightMemberTabs" styleClass="right-group-tabs" id="right-group-tabs"/>
 
 
 </SplitPane>

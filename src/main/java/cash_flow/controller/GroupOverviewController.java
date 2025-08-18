@@ -85,7 +85,6 @@ public class GroupOverviewController  implements ThemeChangeListener {
     @FXML
     public void initialize() {
         controllerUtilities.initializeSceneStyle(nameLabel, this);
-
         // create Overview Scene
 
     }
