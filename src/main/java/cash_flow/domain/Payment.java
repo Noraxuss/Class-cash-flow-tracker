@@ -25,6 +25,10 @@ public class Payment {
     @Column(nullable = false, name = "payment_date")
     private LocalDateTime paymentDate;
 
+    @Column(nullable = false, name = "payment_event_type")
+    @Enumerated(EnumType.STRING)
+    private PaymentEventType paymentEventType;
+
     @ManyToOne
     @JoinColumn(name = "group_member_id", nullable = false)
     private Member member;

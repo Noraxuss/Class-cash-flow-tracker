@@ -20,12 +20,13 @@ public class Logs {
     @Column(nullable = false, name = "id")
     private Long id;
 
-    @Column(nullable = false, name = "message")
-    private String message;
+    @ManyToOne
+    @JoinColumn(name = "payment_id")
+    private Payment payment;
 
     @ManyToOne
-    @JoinColumn(name = "payment_id", nullable = false)
-    private Payment payment;
+    @JoinColumn(name = "group_id")
+    private Group group;
 
     // Parent log (nullable, because root logs won’t have a parent)
     @ManyToOne

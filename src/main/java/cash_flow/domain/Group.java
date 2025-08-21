@@ -32,11 +32,18 @@ public class Group {
     @Column(name = "group_end_date" , nullable = false)
     private LocalDateTime groupEndDate;
 
+    @Column(name = "group_event_type")
+    @Enumerated(EnumType.STRING)
+    private GroupEventType groupEventType;
+
     @ManyToOne
     @JoinColumn(name = "overseer_id", nullable = false)
     private Overseer overseer;
 
     @OneToMany(mappedBy = "group")
     private List<GroupMembership> groupMemberships;
+
+    @OneToMany(mappedBy = "group")
+    private List<Logs> logs;
 
 }

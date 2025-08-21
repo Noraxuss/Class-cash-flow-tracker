@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.control.skin.SplitPaneSkin.ContentDivider?>
+<VBox spacing="10"
+      xmlns="http://javafx.com/javafx/17.0.12"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="cash_flow.controller.RequiredPaymentController">
+
+    <HBox fx:id="nameHBox" spacing="10">
+        <Label text="%name"/>
+        <TextField fx:id="nameTextField" promptText="%enter_name"/>
+    </HBox>
+
+    <HBox fx:id="recurringPaymentToggle" spacing="10" >
+        <CheckBox fx:id="isRecurringPaymentCheckBox" text="%recurring_payment"/>
+        <!-- Info icon with tooltip -->
+        <Label styleClass="info-icon">
+            <graphic>
+                <ImageView fitWidth="16" fitHeight="16">
+                    <Image fx:id="infoIconImageForRecurringPayment"
+                           url="@/images/info_icon.png"/>
+                </ImageView>
+            </graphic>
+            <tooltip>
+                <Tooltip text="%recurring_payment_box_information"/>
+            </tooltip>
+        </Label>
+    </HBox>
+
+    <HBox fx:id="multipleInstallmentsToggle" spacing="10">
+        <CheckBox fx:id="isMultipleInstallmentsCheckBox" text="%multiple_installments"/>
+        <!-- Info icon with tooltip -->
+        <Label styleClass="info-icon">
+            <graphic>
+                <ImageView fitWidth="16" fitHeight="16">
+                    <Image fx:id="infoIconImageForMultipleInstallments"
+                           url="@/images/info_icon.png"/>
+                </ImageView>
+            </graphic>
+            <tooltip>
+                <Tooltip text="%multiple_installments_box_information"/>
+            </tooltip>
+        </Label>
+    </HBox>
+
+    <Separator/>
+
+    <HBox fx:id="defaultAmountContainer">
+        <Label fx:id="amount"
+    </HBox>
+
+    <Separator/>
+
+    <GridPane fx:id="monthCheckBox" hgap="10" vgap="8" alignment="CENTER">
+        <!-- Column constraints -->
+        <columnConstraints>
+            <ColumnConstraints halignment="LEFT" minWidth="100"/>
+            <ColumnConstraints halignment="CENTER" minWidth="100"/>
+            <ColumnConstraints halignment="CENTER" minWidth="100"/>
+            <ColumnConstraints halignment="CENTER" minWidth="100"/>
+        </columnConstraints>
+
+        <!-- Header row -->
+        <Label text="%Season" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <Label text="%Month" GridPane.rowIndex="0" GridPane.columnIndex="1" visible="false"/>
+        <Label text="%Month" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+        <Label text="%Month" GridPane.rowIndex="0" GridPane.columnIndex="3" visible="false"/>
+
+        <!-- Spring -->
+        <Label text="%Spring" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <CheckBox fx:id="march" text="%March" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+        <CheckBox fx:id="april" text="%April" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+        <CheckBox fx:id="may" text="%May" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+
+        <!-- Summer -->
+        <Label text="%Summer" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <CheckBox fx:id="june" text="%June" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+        <CheckBox fx:id="july" text="%July" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+        <CheckBox fx:id="august" text="%August" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
+
+        <!-- Autumn -->
+        <Label text="%Autumn" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <CheckBox fx:id="september" text="%September" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+        <CheckBox fx:id="october" text="%October" GridPane.rowIndex="3" GridPane.columnIndex="2"/>
+        <CheckBox fx:id="november" text="%November" GridPane.rowIndex="3" GridPane.columnIndex="3"/>
+
+        <!-- Winter -->
+        <Label text="%Winter" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <CheckBox fx:id="december" text="%December" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+        <CheckBox fx:id="january" text="%January" GridPane.rowIndex="4" GridPane.columnIndex="2"/>
+        <CheckBox fx:id="february" text="%February" GridPane.rowIndex="4" GridPane.columnIndex="3"/>
+    </GridPane>
+
+
+
+
+
+
+</VBox>
