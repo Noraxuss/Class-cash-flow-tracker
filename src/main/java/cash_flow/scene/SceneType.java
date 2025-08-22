@@ -15,7 +15,11 @@ public enum SceneType {
     ADD_PAYMENT("/scenes/add_payment/add_payment_scene.properties"),
     SPLIT_CENTER("/scenes/split_center/split_center_scene.properties"),
     GROUP_OVERVIEW("/scenes/group_overview/group_overview_scene.properties"),
-    MEMBER_OVERVIEW("/scenes/member_overview/member_overview_scene.properties");
+    MEMBER_OVERVIEW("/scenes/member_overview/member_overview_scene.properties"),
+    PAYMENT("/scenes/payment/payment_scene.properties"),
+    MEMBER_EXEMPTION("/scenes/member_exemptions/member_exemptions_scene.properties"),
+    USER_LOGS("/scenes/user_logs/user_logs_scene.properties");
+
 
 //    GROUP_DATA("/not-in-use/group_data-not_in_use/group_data_scene.properties"),
 //    MEMBER_DATA("/not-in-use/member_data-not_in_use/member_data_scene.properties"),

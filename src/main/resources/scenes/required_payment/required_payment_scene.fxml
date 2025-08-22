@@ -1,105 +1,198 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.control.skin.SplitPaneSkin.ContentDivider?>
+<!--
+Main container for the entire "Required Payment" form.
+Uses VBox to stack components vertically.
+-->
 <VBox spacing="10"
       xmlns="http://javafx.com/javafx/17.0.12"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="cash_flow.controller.RequiredPaymentController">
 
-    <HBox fx:id="nameHBox" spacing="10">
-        <Label text="%name"/>
-        <TextField fx:id="nameTextField" promptText="%enter_name"/>
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10" />
+    </padding>
+
+    <!-- ===========================
+         Section: Name Input
+         =========================== -->
+    <HBox fx:id="nameHBox">
+        <Label fx:id="nameLabel" text="%name" />
+        <TextField fx:id="nameTextField" />
     </HBox>
 
-    <HBox fx:id="recurringPaymentToggle" spacing="10" >
-        <CheckBox fx:id="isRecurringPaymentCheckBox" text="%recurring_payment"/>
-        <!-- Info icon with tooltip -->
-        <Label styleClass="info-icon">
-            <graphic>
-                <ImageView fitWidth="16" fitHeight="16">
-                    <Image fx:id="infoIconImageForRecurringPayment"
-                           url="@/images/info_icon.png"/>
-                </ImageView>
-            </graphic>
-            <tooltip>
-                <Tooltip text="%recurring_payment_box_information"/>
-            </tooltip>
-        </Label>
+    <!-- ===========================
+         Section: Payment Type Selection (Radio Buttons)
+         =========================== -->
+    <RadioButton fx:id="singlePaymentRadioButton" selected="true" text="%single_payment" toggleGroup="$paymentType" />
+    <RadioButton fx:id="recurringPaymentsRadioButton" text="%recurring_payments" toggleGroup="$paymentType" />
+    <RadioButton fx:id="multiInstallmentPaymentsRadioButton" text="%multi_installment_payments" toggleGroup="$paymentType" />
+
+    <Separator />
+
+    <!-- ===========================
+         Section: Single Payment Configuration
+         =========================== -->
+    <VBox fx:id="singlePaymentHBox">
+        <GridPane>
+            <!-- Amount -->
+            <Label fx:id="singlePaymentAmountLabel" text="%payment_amount" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <TextField fx:id="singlePaymentTextField" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+            <!-- Due Date -->
+            <Label fx:id="singlePaymentDueDateLabel" text="%due_date" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <DatePicker fx:id="singlePaymentDueDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+            <!-- Exemptions Button -->
+            <Label fx:id="singlePaymentExemptionsLabel" text="%exemptions" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <Button fx:id="singlePaymentExemptionsButton" text="%exemptions" onMouseClicked="#onExemptionsButtonClicked" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+            <!-- Currency -->
+            <Label fx:id="singlePaymentCurrencyLabel" text="%currency" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+            <ComboBox fx:id="singlePaymentCurrencyComboBox" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+        </GridPane>
+    </VBox>
+
+    <Separator prefWidth="200.0" />
+
+    <!-- ===========================
+         Section: Recurring Payments Configuration
+         =========================== -->
+    <VBox fx:id="recurringPaymentsGridPane">
+        <GridPane>
+            <!-- Amount -->
+            <Label fx:id="recurringPaymentAmountLabel" text="%payment_amount" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <TextField fx:id="recurringPaymentAmountTextField" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+            <!-- Exemptions Button -->
+            <Label fx:id="recurringPaymentExemptionsLabel" text="%exemptions" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <Button fx:id="recurringPaymentExemptionsButton" text="%exemptions" onMouseClicked="#onExemptionsButtonClicked" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+            <!-- Currency -->
+            <Label fx:id="recurringPaymentCurrencyLabel" text="%currency" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <ComboBox fx:id="recurringPaymentCurrencyComboBox" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        </GridPane>
+
+        <!-- ===========================
+             Sub-section: Recurring Payment Months Selection (Grid of Checkboxes)
+             =========================== -->
+        <GridPane alignment="CENTER" hgap="10" vgap="8">
+            <!-- Column constraints -->
+            <columnConstraints>
+                <ColumnConstraints halignment="LEFT" />
+                <ColumnConstraints halignment="LEFT" />
+                <ColumnConstraints halignment="LEFT" />
+                <ColumnConstraints halignment="LEFT" />
+            </columnConstraints>
+
+            <!-- Header row -->
+            <Label text="%Season" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <Label text="%Month" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+            <Label text="%Month" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+            <Label text="%Month" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+
+            <!-- Spring -->
+            <Label text="%Spring" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <CheckBox fx:id="march" text="%March" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <CheckBox fx:id="april" text="%April" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <CheckBox fx:id="may" text="%May" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+
+            <!-- Summer -->
+            <Label text="%Summer" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+            <CheckBox fx:id="june" text="%June" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <CheckBox fx:id="july" text="%July" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+            <CheckBox fx:id="august" text="%August" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+
+            <!-- Autumn -->
+            <Label text="%Autumn" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+            <CheckBox fx:id="september" text="%September" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <CheckBox fx:id="october" text="%October" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+            <CheckBox fx:id="november" text="%November" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+
+            <!-- Winter -->
+            <Label text="%Winter" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+            <CheckBox fx:id="december" text="%December" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <CheckBox fx:id="january" text="%January" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+            <CheckBox fx:id="february" text="%February" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+
+            <!-- Row constraints -->
+            <rowConstraints>
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+            </rowConstraints>
+        </GridPane>
+    </VBox>
+
+    <Separator />
+
+    <!-- ===========================
+         Section: Multi-Installment Payments
+         =========================== -->
+    <VBox fx:id="MultiInstallmentPayments">
+        <!-- Buttons to Add/Remove Rows -->
+        <HBox alignment="TOP_CENTER">
+            <padding>
+                <Insets right="10" bottom="10" left="10" />
+            </padding>
+            <Button fx:id="addRow" mnemonicParsing="false" onMouseClicked="#onAddRowClicked" text="%add_row">
+                <HBox.margin>
+                    <Insets right="60.0" />
+                </HBox.margin>
+            </Button>
+            <Button fx:id="removeRow" mnemonicParsing="false" onMouseClicked="#onRemoveRowClicked" text="%remove_row" />
+        </HBox>
+
+        <!-- Scrollable Grid for Multiple Installments -->
+        <ScrollPane fx:id="multipleInstallmentPaymentsGridPane" maxHeight="200.0" fitToWidth="true" >
+            <GridPane>
+                <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" />
+                    <ColumnConstraints hgrow="SOMETIMES" />
+                    <ColumnConstraints hgrow="SOMETIMES" />
+                    <ColumnConstraints hgrow="SOMETIMES" />
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                </rowConstraints>
+                <!-- Headers -->
+                <Label text="%multiple_payment_installment_amount" />
+                <Label text="%currency" GridPane.columnIndex="1" />
+                <Label text="%due_date" GridPane.columnIndex="2" />
+                <Label text="%exemptions" GridPane.columnIndex="3" />
+            </GridPane>
+        </ScrollPane>
+    </VBox>
+
+    <!-- ===========================
+         Define the Toggle Group for Radio Buttons
+         =========================== -->
+    <fx:define>
+        <ToggleGroup fx:id="paymentType" />
+    </fx:define>
+
+    <Separator />
+
+    <!-- ===========================
+         Section: Action Buttons (Save / Cancel)
+         =========================== -->
+    <HBox alignment="CENTER">
+        <Button fx:id="saveButton" mnemonicParsing="false" onMouseClicked="#onSaveButtonClicked" text="%save_required_payment">
+            <VBox.margin>
+                <Insets top="10.0" />
+            </VBox.margin>
+        </Button>
+        <Button fx:id="cancelButton" mnemonicParsing="false" onMouseClicked="#onCancelButtonClicked" text="%cancel">
+            <HBox.margin>
+                <Insets left="10.0" />
+            </HBox.margin>
+        </Button>
     </HBox>
-
-    <HBox fx:id="multipleInstallmentsToggle" spacing="10">
-        <CheckBox fx:id="isMultipleInstallmentsCheckBox" text="%multiple_installments"/>
-        <!-- Info icon with tooltip -->
-        <Label styleClass="info-icon">
-            <graphic>
-                <ImageView fitWidth="16" fitHeight="16">
-                    <Image fx:id="infoIconImageForMultipleInstallments"
-                           url="@/images/info_icon.png"/>
-                </ImageView>
-            </graphic>
-            <tooltip>
-                <Tooltip text="%multiple_installments_box_information"/>
-            </tooltip>
-        </Label>
-    </HBox>
-
-    <Separator/>
-
-    <HBox fx:id="defaultAmountContainer">
-        <Label fx:id="amount"
-    </HBox>
-
-    <Separator/>
-
-    <GridPane fx:id="monthCheckBox" hgap="10" vgap="8" alignment="CENTER">
-        <!-- Column constraints -->
-        <columnConstraints>
-            <ColumnConstraints halignment="LEFT" minWidth="100"/>
-            <ColumnConstraints halignment="CENTER" minWidth="100"/>
-            <ColumnConstraints halignment="CENTER" minWidth="100"/>
-            <ColumnConstraints halignment="CENTER" minWidth="100"/>
-        </columnConstraints>
-
-        <!-- Header row -->
-        <Label text="%Season" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <Label text="%Month" GridPane.rowIndex="0" GridPane.columnIndex="1" visible="false"/>
-        <Label text="%Month" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
-        <Label text="%Month" GridPane.rowIndex="0" GridPane.columnIndex="3" visible="false"/>
-
-        <!-- Spring -->
-        <Label text="%Spring" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-        <CheckBox fx:id="march" text="%March" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-        <CheckBox fx:id="april" text="%April" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
-        <CheckBox fx:id="may" text="%May" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
-
-        <!-- Summer -->
-        <Label text="%Summer" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-        <CheckBox fx:id="june" text="%June" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
-        <CheckBox fx:id="july" text="%July" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
-        <CheckBox fx:id="august" text="%August" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
-
-        <!-- Autumn -->
-        <Label text="%Autumn" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-        <CheckBox fx:id="september" text="%September" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
-        <CheckBox fx:id="october" text="%October" GridPane.rowIndex="3" GridPane.columnIndex="2"/>
-        <CheckBox fx:id="november" text="%November" GridPane.rowIndex="3" GridPane.columnIndex="3"/>
-
-        <!-- Winter -->
-        <Label text="%Winter" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-        <CheckBox fx:id="december" text="%December" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
-        <CheckBox fx:id="january" text="%January" GridPane.rowIndex="4" GridPane.columnIndex="2"/>
-        <CheckBox fx:id="february" text="%February" GridPane.rowIndex="4" GridPane.columnIndex="3"/>
-    </GridPane>
-
-
-
-
-
 
 </VBox>

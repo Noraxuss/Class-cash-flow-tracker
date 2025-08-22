@@ -5,6 +5,7 @@ import cash_flow.domain.Member;
 import cash_flow.domain.Overseer;
 import cash_flow.dto.incoming.GroupCreationCommand;
 import cash_flow.dto.outgoing.GroupSelectionDetails;
+import cash_flow.dto.outgoing.MemberExemptionDetails;
 import cash_flow.dto.outgoing.MemberOverviewDetails;
 import cash_flow.dto.outgoing.OverseerSelectionDetails;
 import org.modelmapper.Converter;
@@ -46,6 +47,11 @@ public class ModelMapperConfig {
                 .addMappings(mapper ->
                         mapper.map(Group::getId, GroupSelectionDetails::setGroupId));
 
+        modelMapper.typeMap(Member.class, MemberExemptionDetails.class)
+                .addMappings(mapper -> {
+                    mapper.map(Member::getId, MemberExemptionDetails::setId);
+                    mapper.map(member -> member.getFirstName() + " " + member.getLastName(), MemberExemptionDetails::setName);
+                });
 
 
         return modelMapper;

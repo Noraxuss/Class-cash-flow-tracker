@@ -8,6 +8,7 @@ import cash_flow.domain.Member;
 import cash_flow.domain.PersonType;
 import cash_flow.dto.incoming.GroupMemberCreationCommand;
 import cash_flow.dto.mappers.MemberMapper;
+import cash_flow.dto.outgoing.MemberExemptionDetails;
 import cash_flow.dto.outgoing.MemberOverviewDetails;
 import cash_flow.repository.GroupMembershipRepository;
 import cash_flow.repository.MemberRepository;
@@ -15,10 +16,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -107,5 +110,20 @@ public class MemberService {
         }
         log.info("Fetched {} member overview details", memberOverviewDetails.size());
         return memberOverviewDetails;
+    }
+
+    public List<MemberExemptionDetails> getMemberList() {
+        List<Member> members =
+                memberRepository.findAllByGroupId(appContext.getGroupContext().getGroupId());
+        log.info("Fetched {} members from repository for exemptions", members.size());
+        List<MemberExemptionDetails> memberExemptionDetails = new ArrayList<>();
+        for (Member member : members) {
+            log.debug("Mapping member {} to MemberExemptionDetails", member.toString());
+            MemberExemptionDetails details =
+                    modelMapper.map(member, MemberExemptionDetails.class);
+            memberExemptionDetails.add(details);
+        }
+        log.info("Fetched {} member exemption details", memberExemptionDetails.size());
+        return memberExemptionDetails;
     }
 }
