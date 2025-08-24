@@ -89,6 +89,15 @@ public class GroupService {
         return startDate;
     }
 
+    public LocalDate getGroupEndDate(Long groupId) {
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new IllegalArgumentException("not good"));
+
+        LocalDate endDate = group.getGroupEndDate().toLocalDate();
+        log.info("Retrieved end date for group ID {}: {}", groupId, endDate);
+        return endDate;
+    }
+
     public Group getGroupFromRepository(Long groupId) {
         return groupRepository.findById(groupId)
                 .orElseThrow(() -> new IllegalArgumentException("Group with ID " + groupId + " not found"));

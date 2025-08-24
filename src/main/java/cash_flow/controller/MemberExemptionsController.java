@@ -21,6 +21,9 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Component
 @Slf4j
 public class MemberExemptionsController implements ThemeChangeListener {
@@ -41,6 +44,7 @@ public class MemberExemptionsController implements ThemeChangeListener {
     @Getter
     private ObservableList<MemberExemptionDetails> exemptions;
 
+
     public MemberExemptionsController(StyleManager styleManager, ControllerUtilities controllerUtilities, SceneEngine sceneEngine, TabManager tabManager, AppContext appContext, MemberService memberService) {
         this.styleManager = styleManager;
         this.controllerUtilities = controllerUtilities;
@@ -55,23 +59,27 @@ public class MemberExemptionsController implements ThemeChangeListener {
         log.info("Initializing MemberExemptionsController");
         controllerUtilities.initializeSceneStyle(searchBar, this);
 
-        populateExemptionsList();
         setupSearchBar();
     }
 
-    private void populateExemptionsList() {
-        exemptions = FXCollections.observableArrayList();
-        exemptions.addAll(memberService.getMemberList());
+    public void populateExemptionsList(ObservableList<MemberExemptionDetails> currentExemptions) {
 
-        exemptionsVBox.getChildren().clear(); // clear any previous nodes
-
-        for (MemberExemptionDetails exemption : exemptions) {
+        exemptionsVBox.getChildren().clear();
+        for (MemberExemptionDetails exemption : currentExemptions) {
             CheckBox checkBox = new CheckBox(exemption.getName());
             checkBox.setId(exemption.getId());
+            checkBox.setSelected(exemption.isExempted());
+
+            // Listener to update the boolean in real time
+            checkBox.selectedProperty()
+                    .addListener(
+                            (obs, oldVal, newVal)
+                                    -> exemption.setExempted(newVal));
+
             exemptionsVBox.getChildren().add(checkBox);
         }
 
-        // Add the "no results" label at the end, hidden initially
+        // Optional: add "no results" label at the end
         noResultsLabel.setVisible(false);
         exemptionsVBox.getChildren().add(noResultsLabel);
     }

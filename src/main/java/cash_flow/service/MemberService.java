@@ -119,9 +119,8 @@ public class MemberService {
         List<MemberExemptionDetails> memberExemptionDetails = new ArrayList<>();
         for (Member member : members) {
             log.debug("Mapping member {} to MemberExemptionDetails", member.toString());
-            MemberExemptionDetails details =
-                    modelMapper.map(member, MemberExemptionDetails.class);
-            memberExemptionDetails.add(details);
+            MemberExemptionDetails details = memberMapper.memberToMemberExceptionDetails(member);
+                    memberExemptionDetails.add(details);
         }
         log.info("Fetched {} member exemption details", memberExemptionDetails.size());
         return memberExemptionDetails;

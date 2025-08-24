@@ -16,6 +16,7 @@
     <MenuBar fx:id="mainMenuBar">
         <Menu text="File">
             <MenuItem fx:id="addMembers" text="%add_members"/>
+            <MenuItem fx:id="addRequiredPayment" text="%add_required_payment"/>
         </Menu>
     </MenuBar>
     <AnchorPane fx:id="centerPane" />

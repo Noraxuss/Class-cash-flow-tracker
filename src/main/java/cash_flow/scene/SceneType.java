@@ -18,7 +18,8 @@ public enum SceneType {
     MEMBER_OVERVIEW("/scenes/member_overview/member_overview_scene.properties"),
     PAYMENT("/scenes/payment/payment_scene.properties"),
     MEMBER_EXEMPTION("/scenes/member_exemptions/member_exemptions_scene.properties"),
-    USER_LOGS("/scenes/user_logs/user_logs_scene.properties");
+    USER_LOGS("/scenes/user_logs/user_logs_scene.properties"),
+    REQUIRED_PAYMENT("/scenes/required_payment/required_payment_scene.properties");
 
 
 //    GROUP_DATA("/not-in-use/group_data-not_in_use/group_data_scene.properties"),

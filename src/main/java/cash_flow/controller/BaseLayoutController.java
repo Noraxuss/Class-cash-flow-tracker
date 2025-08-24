@@ -33,6 +33,9 @@ public class BaseLayoutController implements ThemeChangeListener {
     @FXML
     public MenuItem addMembers;
 
+    @FXML
+    public MenuItem addRequiredPayment;
+
 
     public BaseLayoutController(StyleManager styleManager, ControllerUtilities controllerUtilities, SceneEngine sceneEngine) {
         this.styleManager = styleManager;
@@ -51,6 +54,10 @@ public class BaseLayoutController implements ThemeChangeListener {
         addMembers.setOnAction(event -> {
             log.info("Add Members menu item clicked");
             sceneEngine.loadingNextScene(SceneType.ADD_GROUP_MEMBERS);
+        });
+        addRequiredPayment.setOnAction(event -> {
+            log.info("Add Required Payment menu item clicked");
+            sceneEngine.loadingNextScene(SceneType.REQUIRED_PAYMENT);
         });
     }
 

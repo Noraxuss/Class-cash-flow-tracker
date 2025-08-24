@@ -35,4 +35,9 @@ public class RequiredPayment {
     @JoinColumn(name = "group_member_id", nullable = false)
     private Member member;
 
+    @OneToOne
+    @JoinColumn(name = "currency_code", referencedColumnName = "code")
+    private Currency currency;
+
+
 }

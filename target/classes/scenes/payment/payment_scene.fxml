@@ -5,11 +5,6 @@
 <?import javafx.geometry.Insets?>
 
 <VBox xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="cash_flow.controller.UserLogsController"
+      fx:controller="cash_flow.controller.PaymentController"
       spacing="10">
-
-    <Label fx:id="titleLabel" text="%logs"/>
-
-    <ListView fx:id="logsListView" prefHeight="400" prefWidth="600" />
-
 </VBox>

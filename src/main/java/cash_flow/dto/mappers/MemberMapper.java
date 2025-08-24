@@ -2,6 +2,7 @@ package cash_flow.dto.mappers;
 
 import cash_flow.domain.GroupMembership;
 import cash_flow.domain.Member;
+import cash_flow.dto.outgoing.MemberExemptionDetails;
 import cash_flow.dto.outgoing.MemberOverviewDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -22,5 +23,13 @@ public class MemberMapper {
         memberOverviewDetails.setGroupLeaveDate(groupMembership.getMembershipEndDate());
         memberOverviewDetails.setTotalPayment(totalPayments);
         return memberOverviewDetails;
+    }
+
+    public MemberExemptionDetails memberToMemberExceptionDetails(Member member) {
+        MemberExemptionDetails memberExemptionDetails = new MemberExemptionDetails();
+        memberExemptionDetails.setId(member.getId());
+        memberExemptionDetails.setName(member.getFirstName() + " " + member.getLastName());
+        memberExemptionDetails.setExempted(false);
+        return memberExemptionDetails;
     }
 }

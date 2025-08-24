@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="10"
+      xmlns="http://javafx.com/javafx/23.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="cash_flow.controller.MemberExemptionsController">
+
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10" />
+    </padding>
+
+    <Label text="search_bar_label" />
+    <TextField fx:id="searchBar" promptText="%search_bar_placeholder" />
+
+    <Separator/>
+
+    <ScrollPane fx:id="exemptionsScrollPane" fitToWidth="true" fitToHeight="true">
+        <VBox fx:id="exemptionsVBox" spacing="10">
+            <Label fx:id="noResultsLabel" text="%no_results_found" visible="false"/>
+        </VBox>
+    </ScrollPane>
+
+
+
+</VBox>
+
