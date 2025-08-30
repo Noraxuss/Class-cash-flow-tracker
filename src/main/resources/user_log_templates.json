@@ -1,0 +1,68 @@
+{
+  "templates": [
+    {
+      "template_key": "GROUP_CREATED",
+      "hu": "{DATE}: A csoport {GROUP_NAME} létre lett hozva. Csoportvezető: {OVERSEER_NAME}."
+    },
+    {
+      "template_key": "GROUP_STARTED",
+      "hu": "{DATE}: A csoport {GROUP_NAME} elkezdte működését."
+    },
+    {
+      "template_key": "GROUP_ENDED",
+      "hu": "{DATE}: A csoport {GROUP_NAME} befejezte működését."
+    },
+    {
+      "template_key": "MEMBER_ADDED_TO_GROUP",
+      "hu": "{DATE}: {MEMBER_NAME} hozzá lett adva a csoporthoz {GROUP_NAME}."
+    },
+    {
+      "template_key": "MEMBER_REMOVED_FROM_GROUP",
+      "hu": "{DATE}: {MEMBER_NAME} el lett távolítva a csoportból {GROUP_NAME}."
+    },
+    {
+      "template_key": "REQUIRED_PAYMENT_CREATED",
+      "hu": "{DATE}: {MEMBER_NAME} részére fizetendő összeg lett betervezve: {REQUIRED_PAYMENT_NAME}, mennyiség: {REQUIRED_PAYMENT_AMOUNT} {CURRENCY_SYMBOL}; Határidő: {DUE_DATE}."
+    },
+    {
+      "template_key": "REQUIRED_PAYMENT_MODIFIED",
+      "hu": "{DATE}: {MEMBER_NAME} fizetendő összege ({PREVIOUS_REQUIRED_PAYMENT_AMOUNT}) módosítva lett: {REQUIRED_PAYMENT_NAME}, új összeg: {REQUIRED_PAYMENT_AMOUNT} {CURRENCY_SYMBOL}; Határidő: {DUE_DATE}."
+    },
+    {
+      "template_key": "PAYMENT_MADE",
+      "hu": "{DATE}: {MEMBER_NAME} {REQUIRED_PAYMENT}-(e)t fizetett be. Csoport: {GROUP_NAME}. {REQUIRED_PAYMENT_AMOUNT}/{PAYMENT_AMOUNT}, {IS_FULLY_PAID}"
+    },
+    {
+      "template_key": "PAYMENT_UPDATED",
+      "hu": "{DATE}: {MEMBER_NAME} {REQUIRED_PAYMENT} befizetése módosítva lett. Csoport: {GROUP_NAME}. Előző összeg: {PREVIOUS_PAYMENT_AMOUNT}. Új állapot: {REQUIRED_PAYMENT_AMOUNT}/{PAYMENT_AMOUNT}, {IS_FULLY_PAID}"
+    },
+    {
+      "template_key": "PAYMENT_DELETED",
+      "hu": "{DATE}: {MEMBER_NAME} {REQUIRED_PAYMENT} befizetése törölve lett. Csoport: {GROUP_NAME}. Előző összeg: {PREVIOUS_PAYMENT_AMOUNT}. Új állapot: {REQUIRED_PAYMENT_AMOUNT}/{PAYMENT_AMOUNT}, {IS_FULLY_PAID}"
+    },
+    {
+      "template_key": "PAYMENT_REFUNDED",
+      "hu": "{DATE}: {MEMBER_NAME} részére visszatérítés történt. Összeg: {REFUND_AMOUNT} {CURRENCY_SYMBOL}. Kapcsolódó befizetés: {REQUIRED_PAYMENT_NAME}. Csoport: {GROUP_NAME}."
+    },
+    {
+      "template_key": "REMAINING_BALANCE_REFUNDED",
+      "hu": "{DATE}: {MEMBER_NAME} fennmaradó egyenlege visszatérítve. Összeg: {REFUND_AMOUNT} {CURRENCY_SYMBOL}. Csoport: {GROUP_NAME}."
+    },
+    {
+      "template_key": "REMAINING_GROUP_BALANCE_REDIRECTED",
+      "hu": "{DATE}: A fennmaradó csoportegyenleg ({AMOUNT} {CURRENCY_SYMBOL}) átirányítva más célra: {TARGET_REQUIRED_PAYMENT_NAME}. Eredeti csoport: {GROUP_NAME}."
+    },
+    {
+      "template_key": "OUTGOING_PAYMENT_CREATED",
+      "hu": "{DATE}: Kimenő fizetés létrehozva: {OUTGOING_PAYMENT_NAME}. Összeg: {AMOUNT} {CURRENCY_SYMBOL}. Kapcsolódó csoport: {GROUP_NAME}."
+    },
+    {
+      "template_key": "OUTGOING_PAYMENT_UPDATED",
+      "hu": "{DATE}: Kimenő fizetés módosítva: {OUTGOING_PAYMENT_NAME}. Előző összeg: {PREVIOUS_AMOUNT} {CURRENCY_SYMBOL}. Új összeg: {AMOUNT} {CURRENCY_SYMBOL}. Kapcsolódó csoport: {GROUP_NAME}."
+    },
+    {
+      "template_key": "OUTGOING_PAYMENT_DELETED",
+      "hu": "{DATE}: Kimenő fizetés törölve: {OUTGOING_PAYMENT_NAME}. Előző összeg: {AMOUNT} {CURRENCY_SYMBOL}. Kapcsolódó csoport: {GROUP_NAME}."
+    }
+  ]
+}

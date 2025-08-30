@@ -1,0 +1,31 @@
+package cash_flow.service.utilities;
+
+import lombok.Getter;
+
+@Getter
+public enum LogPlaceholderEnum {
+
+    DATE("{DATE}"),
+    MEMBER_NAME("{MEMBER_NAME}"),
+    GROUP_NAME("{GROUP_NAME}"),
+    REQUIRED_PAYMENT_NAME("{REQUIRED_PAYMENT_NAME}"),
+    REQUIRED_PAYMENT_AMOUNT("{REQUIRED_PAYMENT_AMOUNT}"),
+    PREVIOUS_REQUIRED_PAYMENT_AMOUNT("{PREVIOUS_REQUIRED_PAYMENT_AMOUNT}"),
+    PAYMENT_AMOUNT("{PAYMENT_AMOUNT}"),
+    PREVIOUS_PAYMENT_AMOUNT("{PREVIOUS_PAYMENT_AMOUNT}"),
+    IS_FULLY_PAID("{IS_FULLY_PAID}"),
+    CURRENCY_SYMBOL("{CURRENCY_SYMBOL}"),
+    REFUND_AMOUNT("{REFUND_AMOUNT}"),
+    AMOUNT("{AMOUNT}"),
+    PREVIOUS_AMOUNT("{PREVIOUS_AMOUNT}"),
+    OUTGOING_PAYMENT_NAME("{OUTGOING_PAYMENT_NAME}"),
+    TARGET_REQUIRED_PAYMENT_NAME("{TARGET_REQUIRED_PAYMENT_NAME}"),
+    DUE_DATE("{DUE_DATE}"),
+    OVERSEER_NAME("{OVERSEER_NAME}");
+
+    private final String placeholder;
+
+    LogPlaceholderEnum(String placeholder) {
+        this.placeholder = placeholder;
+    }
+}

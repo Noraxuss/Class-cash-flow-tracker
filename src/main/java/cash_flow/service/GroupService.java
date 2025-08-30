@@ -2,6 +2,7 @@ package cash_flow.service;
 
 import cash_flow.common.ErrorUtilities;
 import cash_flow.domain.Group;
+import cash_flow.domain.LogsMessages;
 import cash_flow.domain.Overseer;
 import cash_flow.dto.incoming.GroupCreationCommand;
 import cash_flow.dto.outgoing.GroupSelectionDetails;
@@ -10,6 +11,7 @@ import cash_flow.repository.GroupRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -24,13 +26,19 @@ public class GroupService {
     private final ModelMapper modelMapper;
     private final OverseerService overseerService;
     private final ErrorUtilities errorUtilities;
+    private final LogService logService;
 
     @Autowired
-    public GroupService(GroupRepository groupRepository, ModelMapper modelMapper, OverseerService overseerService, ErrorUtilities errorUtilities) {
+    public GroupService(GroupRepository groupRepository,
+                        ModelMapper modelMapper,
+                        OverseerService overseerService,
+                        ErrorUtilities errorUtilities,
+                        @Lazy LogService logService) {
         this.groupRepository = groupRepository;
         this.modelMapper = modelMapper;
         this.overseerService = overseerService;
         this.errorUtilities = errorUtilities;
+        this.logService = logService;
     }
 
     public List<GroupSelectionDetails> getOverseerGroups(OverseerSelectionDetails selectedOverseer) {
@@ -54,8 +62,6 @@ public class GroupService {
         } else {
             log.info("No groups found for overseer: {}", selectedOverseer.getName());
         }
-
-
         return groupSelectionDetailsList;
     }
 
@@ -77,6 +83,7 @@ public class GroupService {
         groupRepository.save(group);
 
         log.info("Group created successfully with ID: {}", group.getId());
+        logService.createLogEntry(LogsMessages.GROUP_CREATED, requiredPayment, member, currency, group);
         return group.getId();
     }
 
@@ -101,5 +108,10 @@ public class GroupService {
     public Group getGroupFromRepository(Long groupId) {
         return groupRepository.findById(groupId)
                 .orElseThrow(() -> new IllegalArgumentException("Group with ID " + groupId + " not found"));
+    }
+
+    public Group getGroupById(Long id) {
+        return groupRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Group with ID " + id + " not found"));
     }
 }

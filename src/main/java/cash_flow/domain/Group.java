@@ -46,4 +46,7 @@ public class Group {
     @OneToMany(mappedBy = "group")
     private List<Logs> logs;
 
+    @OneToMany(mappedBy = "group")
+    private List<GroupCurrencyHistory> groupCurrencyHistory;
+
 }

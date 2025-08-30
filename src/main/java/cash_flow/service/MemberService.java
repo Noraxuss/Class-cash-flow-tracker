@@ -2,10 +2,7 @@ package cash_flow.service;
 
 import cash_flow.context.AppContext;
 import cash_flow.controller.LoadingController;
-import cash_flow.domain.GroupMembership;
-import cash_flow.domain.Guardian;
-import cash_flow.domain.Member;
-import cash_flow.domain.PersonType;
+import cash_flow.domain.*;
 import cash_flow.dto.incoming.GroupMemberCreationCommand;
 import cash_flow.dto.mappers.MemberMapper;
 import cash_flow.dto.outgoing.MemberExemptionDetails;
@@ -39,6 +36,7 @@ public class MemberService {
     private final PersonService personService;
     private final GroupMemberShipService groupMemberShipService;
     private final PaymentService paymentService;
+    private final LogService logService;
 
     @Autowired
     public MemberService(MemberRepository memberRepository,
@@ -49,7 +47,7 @@ public class MemberService {
                          GroupMemberShipService groupMemberShipService,
                          AppContext appContext,
                          MemberMapper memberMapper,
-                         PaymentService paymentService) {
+                         PaymentService paymentService, LogService logService) {
         this.memberRepository = memberRepository;
         this.modelMapper = modelMapper;
         this.guardianService = guardianService;
@@ -59,6 +57,7 @@ public class MemberService {
         this.appContext = appContext;
         this.memberMapper = memberMapper;
         this.paymentService = paymentService;
+        this.logService = logService;
     }
 
     public void createMember(GroupMemberCreationCommand groupMemberCreationCommand) {
@@ -90,6 +89,13 @@ public class MemberService {
 
         groupMemberShipService.createMembership(member, groupMemberCreationCommand.getStartDate());
 
+        log.info("Member created with ID: {}", member.getId());
+        Group group = member.getGroupMemberships().stream()
+                .map(GroupMembership::getGroup)
+                .filter(gmGroup -> gmGroup.getId().equals(appContext.getGroupContext().getGroupId())) // extract the group
+                .findFirst()                     // get the first match
+                .orElse(null);
+        logService.createLogEntry(LogsMessages.MEMBER_ADDED_TO_GROUP, group, member);
     }
 
     public ObservableList<MemberOverviewDetails> getMemberOverviewDetails() {
@@ -124,5 +130,9 @@ public class MemberService {
         }
         log.info("Fetched {} member exemption details", memberExemptionDetails.size());
         return memberExemptionDetails;
+    }
+
+    public Member getMember(String id) {
+        return memberRepository.findById(id).orElse(null);
     }
 }

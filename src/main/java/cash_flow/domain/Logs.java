@@ -20,6 +20,18 @@ public class Logs {
     @Column(nullable = false, name = "id")
     private Long id;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, name = "logs_messages")
+    private LogsMessages logsMessages;
+
+    // optional free-text for extra notes (admin corrections etc.)
+    @Column(columnDefinition = "TEXT")
+    private String note;
+
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     @ManyToOne
     @JoinColumn(name = "payment_id")
     private Payment payment;
@@ -27,6 +39,9 @@ public class Logs {
     @ManyToOne
     @JoinColumn(name = "group_id")
     private Group group;
+
+    @OneToOne(mappedBy = "logs")
+    private GroupCurrencyHistory groupCurrencyHistory;
 
     // Parent log (nullable, because root logs won’t have a parent)
     @ManyToOne
@@ -36,8 +51,4 @@ public class Logs {
     // Child logs (refunds, corrections, etc.)
     @OneToMany(mappedBy = "parentLog", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Logs> relatedLogs = new ArrayList<>();
-
-    // optional free-text for extra notes (admin corrections etc.)
-    @Column(columnDefinition = "TEXT")
-    private String note;
 }

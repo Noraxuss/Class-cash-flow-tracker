@@ -5,11 +5,13 @@ import cash_flow.controller.utilities.ControllerUtilities;
 import cash_flow.controller.utilities.TabManager;
 import cash_flow.dto.incoming.RequiredPaymentCommand;
 import cash_flow.dto.outgoing.MemberExemptionDetails;
+import cash_flow.repository.RequiredPaymentRepository;
 import cash_flow.scene.SceneEngine;
 import cash_flow.scene.SceneType;
 import cash_flow.service.CurrencyService;
 import cash_flow.service.GroupService;
 import cash_flow.service.MemberService;
+import cash_flow.service.RequiredPaymentService;
 import cash_flow.style_manager.Style;
 import cash_flow.style_manager.StyleManager;
 import cash_flow.style_manager.ThemeChangeListener;
@@ -50,6 +52,7 @@ public class RequiredPaymentController implements ThemeChangeListener {
     private final MemberService memberService;
     private final GroupService groupService;
     private final CurrencyService currencyService;
+    private final RequiredPaymentService requiredPaymentService;
 
 
     // ===========================
@@ -146,7 +149,7 @@ public class RequiredPaymentController implements ThemeChangeListener {
                                      ControllerUtilities controllerUtilities,
                                      SceneEngine sceneEngine,
                                      TabManager tabManager,
-                                     AppContext appContext, MemberService memberService, GroupService groupService, CurrencyService currencyService) {
+                                     AppContext appContext, MemberService memberService, GroupService groupService, CurrencyService currencyService, RequiredPaymentService requiredPaymentService) {
         this.styleManager = styleManager;
         this.controllerUtilities = controllerUtilities;
         this.sceneEngine = sceneEngine;
@@ -155,6 +158,7 @@ public class RequiredPaymentController implements ThemeChangeListener {
         this.memberService = memberService;
         this.groupService = groupService;
         this.currencyService = currencyService;
+        this.requiredPaymentService = requiredPaymentService;
     }
 
     @FXML
@@ -481,7 +485,9 @@ public class RequiredPaymentController implements ThemeChangeListener {
             }
         }
 
-        // TODO: save requiredPaymentCommandList to DB
+        // Send to service
+        requiredPaymentService.saveRequiredPayments(requiredPaymentCommandList);
+
     }
 
     private RequiredPaymentCommand createCommand(String name, double amount, Object currency, LocalDate dueDate, List<MemberExemptionDetails> exemptions) {

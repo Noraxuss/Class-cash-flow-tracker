@@ -19,6 +19,9 @@ public class RequiredPayment {
     @Column(nullable = false, name = "id")
     private Long id;
 
+    @Column(nullable = false, name = "name")
+    private String name;
+
     @Column(nullable = false, name = "amount")
     private Double amount;
 

@@ -14,5 +14,6 @@ public class GroupCreationCommand {
     private final String creationDateString;
     private final String endDateString;
     private final String overseerId;
+    private final String currencyCode;
 
 }

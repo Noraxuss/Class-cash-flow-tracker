@@ -1,0 +1,34 @@
+package cash_flow.domain;
+
+import lombok.Getter;
+
+@Getter
+public enum LogsMessages {
+
+    GROUP_CREATED(),
+    GROUP_STARTED(),
+    GROUP_ENDED(),
+
+    MEMBER_ADDED_TO_GROUP(),
+    MEMBER_REMOVED_FROM_GROUP(),
+
+    REQUIRED_PAYMENT_CREATED(),
+
+
+    PAYMENT_MADE,
+    PAYMENT_UPDATED,
+    PAYMENT_DELETED,
+    PAYMENT_REFUNDED,
+    REMAINING_BALANCE_REFUNDED,
+    REMAINING_GROUP_BALANCE_REDIRECTED,
+    OUTGOING_PAYMENT_CREATED,
+    OUTGOING_PAYMENT_UPDATED,
+    OUTGOING_PAYMENT_DELETED
+
+
+
+
+
+//    private String message;
+
+}

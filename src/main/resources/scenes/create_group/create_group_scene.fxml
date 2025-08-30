@@ -41,6 +41,11 @@
         </VBox>
     </HBox>
 
+    <HBox>
+        <Label text="%group_currency_label"/>
+        <ChoiceBox fx:id="currencyChoiceBox" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+    </HBox>
+
     <HBox spacing="20" maxWidth="Infinity" alignment="CENTER">
         <Button fx:id="createGroup" mnemonicParsing="false" onMouseClicked="#createGroupButtonClicked"
                 text="%create_group_button" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>

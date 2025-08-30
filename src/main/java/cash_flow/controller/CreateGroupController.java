@@ -4,20 +4,21 @@ import cash_flow.context.AppContext;
 import cash_flow.controller.utilities.ControllerUtilities;
 import cash_flow.dto.incoming.GroupCreationCommand;
 import cash_flow.scene.SceneEngine;
-import cash_flow.scene.SceneType;
+import cash_flow.service.CurrencyService;
 import cash_flow.service.GroupService;
 import cash_flow.style_manager.Style;
 import cash_flow.style_manager.StyleManager;
 import cash_flow.style_manager.ThemeChangeListener;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import javafx.stage.Stage;
+import javafx.util.Callback;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Component
 @Slf4j
@@ -28,6 +29,12 @@ public class CreateGroupController implements ThemeChangeListener {
     private final ControllerUtilities controllerUtilities;
     private final GroupService groupService;
     private final AppContext appContext;
+    private final CurrencyService currencyService;
+
+
+    @FXML
+    public ChoiceBox<String> currencyChoiceBox;
+
 
     @FXML
     private TextField nameTextField;
@@ -42,12 +49,13 @@ public class CreateGroupController implements ThemeChangeListener {
     @FXML
     private Button back;
 
-    public CreateGroupController(StyleManager styleManager, SceneEngine sceneEngine, ControllerUtilities controllerUtilities, GroupService groupService, AppContext appContext) {
+    public CreateGroupController(StyleManager styleManager, SceneEngine sceneEngine, ControllerUtilities controllerUtilities, GroupService groupService, AppContext appContext, CurrencyService currencyService) {
         this.styleManager = styleManager;
         this.sceneEngine = sceneEngine;
         this.controllerUtilities = controllerUtilities;
         this.groupService = groupService;
         this.appContext = appContext;
+        this.currencyService = currencyService;
     }
 
     /**
@@ -55,25 +63,88 @@ public class CreateGroupController implements ThemeChangeListener {
      */
     public void initialize() {
         controllerUtilities.initializeSceneStyle(createGroup, this);
+
+        List<String> currencies = currencyService.getCurrencyCodeList();
+        currencyChoiceBox.getItems().addAll(currencies);
+
+        // Disable invalid end dates: cannot be before start date
+        endDate.setDayCellFactory(getEndDateCellFactory());
+
+        // Disable invalid start dates: cannot be after end date
+        creationDate.setDayCellFactory(getStartDateCellFactory());
+
+        // Add listeners to update button state whenever input changes
+        nameTextField.textProperty().addListener(
+                (obs, oldVal, newVal) -> updateCreateGroupButtonState());
+        descriptionTextField.textProperty().addListener(
+                (obs, oldVal, newVal) -> updateCreateGroupButtonState());
+        creationDate.valueProperty().addListener(
+                (obs, oldVal, newVal) -> updateCreateGroupButtonState());
+        endDate.valueProperty().addListener(
+                (obs, oldVal, newVal) -> updateCreateGroupButtonState());
+        currencyChoiceBox.valueProperty().addListener(
+                (obs, oldVal, newVal) -> updateCreateGroupButtonState());
+
+        // Run it once initially
+        updateCreateGroupButtonState();
     }
+
+    private void updateCreateGroupButtonState() {
+        boolean isFormValid = !nameTextField.getText().isEmpty() &&
+                !descriptionTextField.getText().isEmpty() &&
+                creationDate.getValue() != null &&
+                endDate.getValue() != null &&
+                currencyChoiceBox.getValue() != null;
+        createGroup.setDisable(!isFormValid);
+    }
+
+    private Callback<DatePicker, DateCell> getEndDateCellFactory() {
+        return dp -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+                if (creationDate.getValue() != null && item.isBefore(creationDate.getValue())) {
+                    setDisable(true);
+                    setStyle("-fx-background-color: #ffc0cb;"); // optional: highlight disabled dates
+                }
+            }
+        };
+    }
+
+    private Callback<DatePicker, DateCell> getStartDateCellFactory() {
+        return dp -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+                if (endDate.getValue() != null && item.isAfter(endDate.getValue())) {
+                    setDisable(true);
+                    setStyle("-fx-background-color: #ffc0cb;");
+                }
+            }
+        };
+    }
+
 
     /**
      * Handles the creation of a new group when the create button is clicked.
      *
      * @param mouseEvent the mouse event triggered by clicking the create button
      */
+    @FXML
     public void createGroupButtonClicked(MouseEvent mouseEvent) {
         String groupName = nameTextField.getText();
         String description = descriptionTextField.getText();
         String creationDateString = creationDate.getValue().toString();
         String endDateString = endDate.getValue().toString();
+        String currency = currencyChoiceBox.getValue();
 
         GroupCreationCommand groupCreationCommand = new GroupCreationCommand(
                 groupName,
                 description,
                 creationDateString,
                 endDateString,
-                appContext.getOverseerContext().getOverseerId());
+                appContext.getOverseerContext().getOverseerId(),
+                currency);
 
         log.info("Creating group with details: name: {}; description: {}; creationDate: {}; endDate: {}",
                 groupName, description, creationDateString, endDateString);
@@ -91,6 +162,7 @@ public class CreateGroupController implements ThemeChangeListener {
      *
      * @param mouseEvent the mouse event triggered by clicking the back button
      */
+    @FXML
     public void backButtonClicked(MouseEvent mouseEvent) {
         log.info("Back button clicked, returning to the previous scene.");
         controllerUtilities.closeStage(createGroup);

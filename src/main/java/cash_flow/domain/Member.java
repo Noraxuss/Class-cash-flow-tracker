@@ -30,4 +30,7 @@ public class Member extends Person {
     @OneToMany(mappedBy = "member")
     private List<Payment> payments;
 
+    @OneToMany(mappedBy = "member")
+    private List<Logs> logs;
+
 }

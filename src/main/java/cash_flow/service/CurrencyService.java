@@ -28,4 +28,7 @@ public class CurrencyService {
         return currencyCodes;
     }
 
+    public Currency getCurrencyByCode(String currency) {
+        return currencyRepository.findByCode(currency);
+    }
 }

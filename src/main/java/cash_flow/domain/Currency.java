@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,6 +26,10 @@ public class Currency {
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "currency")
     private RequiredPayment requiredPayment;
+
+    @OneToMany(mappedBy = "currency")
+    private List<GroupCurrencyHistory> groupCurrencyHistoryList;
+
 
 
 
