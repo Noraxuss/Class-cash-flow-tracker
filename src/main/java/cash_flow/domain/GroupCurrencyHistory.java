@@ -27,7 +27,7 @@ public class GroupCurrencyHistory {
     private Group group;
 
     @OneToOne
-    @JoinColumn(name = "logs_id", nullable = false)
+    @JoinColumn(name = "logs_id")
     private Logs logs;
 
     @ManyToOne

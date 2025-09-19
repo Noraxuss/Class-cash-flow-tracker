@@ -95,7 +95,7 @@ public class MemberService {
                 .filter(gmGroup -> gmGroup.getId().equals(appContext.getGroupContext().getGroupId())) // extract the group
                 .findFirst()                     // get the first match
                 .orElse(null);
-        logService.createLogEntry(LogsMessages.MEMBER_ADDED_TO_GROUP, group, member);
+        logService.createMemberAddedToGroupEntry(LogsMessages.MEMBER_ADDED_TO_GROUP, group, member);
     }
 
     public ObservableList<MemberOverviewDetails> getMemberOverviewDetails() {
@@ -134,5 +134,15 @@ public class MemberService {
 
     public Member getMember(String id) {
         return memberRepository.findById(id).orElse(null);
+    }
+
+    public List<String> getMemberLogs(String memberId, Long groupId) {
+        List<Logs> logs = logService.getLogsByMemberId(memberId, groupId);
+        log.info("Fetched {} logs for member ID {}", logs.size(), memberId);
+        List<String> logMessages = new ArrayList<>();
+        for (Logs log : logs) {
+            logMessages.add(log.getLogsMessages().name());
+        }
+        return logMessages;
     }
 }

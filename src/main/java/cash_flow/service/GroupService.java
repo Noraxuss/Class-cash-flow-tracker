@@ -83,7 +83,7 @@ public class GroupService {
         groupRepository.save(group);
 
         log.info("Group created successfully with ID: {}", group.getId());
-        logService.createLogEntry(LogsMessages.GROUP_CREATED, requiredPayment, member, currency, group);
+        logService.createGroupCreatedEntry(LogsMessages.GROUP_CREATED, group, groupCreationCommand.getCurrencyCode());
         return group.getId();
     }
 

@@ -83,8 +83,6 @@ public class TabManager {
             // Set the scene root
             sceneRoot.setId(details.getId());
 
-
-
             // Optionally, set up buttons if needed
             Button tabButton = new Button(details.getName());
             tabButton.setId(details.getId());

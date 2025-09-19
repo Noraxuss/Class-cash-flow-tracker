@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -26,6 +27,7 @@ public class LogService {
     private GroupService groupService;
     private RequiredPaymentService requiredPaymentService;
     private PaymentService paymentService;
+    private GroupCurrencyHistoryService groupCurrencyHistoryService;
 
     public static final String USER_LOG_TEMPLATES_PATH = "user_log_templates.json";
 
@@ -34,12 +36,13 @@ public class LogService {
                       @Lazy MemberService memberService,
                       @Lazy GroupService groupService,
                       @Lazy RequiredPaymentService requiredPaymentService,
-                      @Lazy PaymentService paymentService) {
+                      @Lazy PaymentService paymentService, GroupCurrencyHistoryService groupCurrencyHistoryService) {
         this.logRepository = logRepository;
         this.memberService = memberService;
         this.groupService = groupService;
         this.requiredPaymentService = requiredPaymentService;
         this.paymentService = paymentService;
+        this.groupCurrencyHistoryService = groupCurrencyHistoryService;
     }
 
     public String fillTemplate(String template, Map<LogPlaceholderEnum, String> values) {
@@ -72,8 +75,6 @@ public class LogService {
         return templates;
     }
 
-
-
     private static Map<LogPlaceholderEnum, String> groupCreatedMap(Group group) {
         return Map.of(
                 LogPlaceholderEnum.DATE, group.getGroupCreationDate().toString(),
@@ -97,15 +98,18 @@ public class LogService {
         log.info("Log entry created: {}", fillTemplate(template, groupCreatedMap(group)));
     }
 
-    public void createLogEntry(LogsMessages logsMessages, Group group) {
+    public void createGroupCreatedEntry(LogsMessages logsMessages, Group group, String currencyCode) {
         String template = getStringTemplate(logsMessages);
 
         Logs logEntry = new Logs();
         logEntry.setGroup(group);
+        log.info("saved log entry to repository");
         saveLogEntryToRepository(group, logEntry, template, logsMessages);
+        groupCurrencyHistoryService.createGroupCurrencyHistory(group, currencyCode, logEntry);
+
     }
 
-    public void createLogEntry(LogsMessages logsMessages, Group group, Member member) {
+    public void createMemberAddedToGroupEntry(LogsMessages logsMessages, Group group, Member member) {
         String template = getStringTemplate(logsMessages);
 
         Logs logEntry = new Logs();
@@ -114,7 +118,7 @@ public class LogService {
         saveLogEntryToRepository(group, logEntry, template, logsMessages);
     }
 
-    public void createLogEntry(LogsMessages logsMessages, RequiredPayment requiredPayment, Member member, Currency currency, Group group) {
+    public void createRequiredPaymentCreatedEntry(LogsMessages logsMessages, RequiredPayment requiredPayment, Member member, Currency currency, Group group) {
         String template = getStringTemplate(logsMessages);
 
         Logs logEntry = new Logs();
@@ -123,5 +127,9 @@ public class LogService {
 
         
 
+    }
+
+    public List<Logs> getLogsByMemberId(String memberId, Long groupId) {
+        return logRepository.findAllByMemberId(memberId, groupId);
     }
 }

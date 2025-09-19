@@ -205,21 +205,23 @@ public class AddGroupMembersController implements ThemeChangeListener {
                             guardianId);
                 }
 
-                // Create member command including guardianId (null if no guardian)
-                GroupMemberCreationCommand groupMemberCreationCommand = new GroupMemberCreationCommand(
-                        groupMember.getMemberFirstName().get(),
-                        groupMember.getMemberLastName().get(),
-                        groupMember.getMemberEmail().get(),
-                        groupMember.getMemberJoinDate().get(),
-                        guardianId);
+                if (!checkIfGroupMemberExists(groupMember)) {
+                    // Create member command including guardianId (null if no guardian)
+                    GroupMemberCreationCommand groupMemberCreationCommand = new GroupMemberCreationCommand(
+                            groupMember.getMemberFirstName().get(),
+                            groupMember.getMemberLastName().get(),
+                            groupMember.getMemberEmail().get(),
+                            groupMember.getMemberJoinDate().get(),
+                            guardianId);
 
-                // Create member
-                memberService.createMember(groupMemberCreationCommand);
+                    // Create member
+                    memberService.createMember(groupMemberCreationCommand);
 
-                log.info("Created member: {} {}, with guardian ID: {}",
-                        groupMember.getMemberFirstName().get(),
-                        groupMember.getMemberLastName().get(),
-                        guardianId);
+                    log.info("Created member: {} {}, with guardian ID: {}",
+                            groupMember.getMemberFirstName().get(),
+                            groupMember.getMemberLastName().get(),
+                            guardianId);
+                }
 
             } catch (Exception e) {
                 log.error("Failed to create member or guardian for: {} {}, error: {}",

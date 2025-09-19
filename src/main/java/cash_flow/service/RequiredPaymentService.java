@@ -60,7 +60,7 @@ public class RequiredPaymentService {
         );
         Group group = groupService.getGroupById(appContext.getGroupContext().getGroupId());
         
-        logService.createLogEntry(LogsMessages.REQUIRED_PAYMENT_CREATED, requiredPayment, member, currency, group);
+        logService.createRequiredPaymentCreatedEntry(LogsMessages.REQUIRED_PAYMENT_CREATED, requiredPayment, member, currency, group);
         
         
         
